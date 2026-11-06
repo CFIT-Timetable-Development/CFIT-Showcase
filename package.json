@@ -1,0 +1,25 @@
+{
+  "name": "cfit-showcase",
+  "private": true,
+  "version": "1.0.0",
+  "description": "CFIT Timetable product showcase, published with GitHub Pages from the main branch. No build step.",
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
+    "lint:html": "html-validate index.html",
+    "qa": "node tools/qa.mjs",
+    "check": "npm run typecheck && npm run lint:html && npm run qa",
+    "media": "node tools/build-media.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "axe-core": "^4.14.0",
+    "html-validate": "^11.18.0",
+    "playwright-core": "^1.65.0",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": ["html-validate:recommended"],
+  "rules": {
+    "no-inline-style": ["error", { "allowedProperties": ["--x", "--y", "--w", "--h"] }],
+    "long-title": "off"
+  }
+}

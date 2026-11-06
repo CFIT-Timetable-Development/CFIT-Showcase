@@ -1,41 +1,679 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en-NZ">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1328">
-  <meta name="description" content="CFIT Timetable — a 2026 Wintec industry internship project transforming spreadsheet timetabling into a visual, validated scheduling workflow.">
-  <title>CFIT Timetable — Product Showcase</title>
-  <style>
-    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100svh;background:#0b1328;color:#f7fbff;background-image:radial-gradient(ellipse 85% 55% at 90% 0%,#213f70 0%,transparent 70%),radial-gradient(ellipse 70% 60% at 0% 100%,#103844 0%,transparent 75%)}
-    main{max-width:720px;min-height:100svh;margin:0 auto;padding:clamp(30px,7vw,66px) 22px 28px;display:flex;flex-direction:column;justify-content:center;gap:40px}
-    .brand{display:flex;gap:12px;align-items:center;font-size:17px;font-weight:750}
-    .logo{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:linear-gradient(130deg,#8be9d5,#6cb6f7);color:#09263b;font-size:24px;font-weight:850}
-    .eyebrow{font-size:12px;letter-spacing:.13em;color:#a4cce7;font-weight:700;text-transform:uppercase}
-    h1{font-size:clamp(40px,9vw,72px);line-height:1.06;letter-spacing:-.054em;margin:20px 0}
-    h1 span{color:#92e9d8}
-    p{font-size:clamp(16px,3vw,19px);line-height:1.7;color:#c5d3e2;margin:0;max-width:620px}
-    a.button{display:inline-flex;margin-top:28px;padding:15px 21px;border-radius:13px;background:#94ecd6;color:#092739;text-decoration:none;font-size:15px;font-weight:750;min-height:48px;align-items:center}
-    a.button:focus-visible{outline:3px solid white;outline-offset:4px}
-    .note{border-radius:15px;border:1px solid #385271;background:rgba(22,38,65,.88);padding:18px 20px;color:#d2dfed;font-size:14px;line-height:1.65}
-    .note strong{color:#a5f0dc}
-    footer{font-size:12px;color:#a5b7cc;border-top:1px solid #30435c;padding-top:19px}
-    @media(max-width:480px){a.button{display:flex;justify-content:center;width:100%}}
-  </style>
+  <title>CFIT Timetable — From Spreadsheets to Smarter Scheduling</title>
+  <meta name="description" content="CFIT Timetable is a full-stack timetable management platform that turns complex Excel workflows into visual, validated and controlled scheduling. A 2026 Wintec industry internship project.">
+  <meta name="theme-color" content="#060f1d">
+  <meta name="color-scheme" content="dark">
+  <link rel="canonical" href="https://cfit-timetable-development.github.io/CFIT-Showcase/">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CFIT Timetable">
+  <meta property="og:title" content="CFIT Timetable — From Spreadsheets to Smarter Scheduling">
+  <meta property="og:description" content="A full-stack timetable management platform transforming complex Excel workflows into visual, validated and controlled scheduling.">
+  <meta property="og:url" content="https://cfit-timetable-development.github.io/CFIT-Showcase/">
+  <meta property="og:image" content="https://cfit-timetable-development.github.io/CFIT-Showcase/assets/img/og-card-1200.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="CFIT Timetable System — From Complexity to Clarity, over the timetable workspace.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="assets/js/main.js" defer></script>
 </head>
 <body>
- <main>
-  <header class="brand"><span class="logo" aria-hidden="true">C</span>CFIT Timetable</header>
-  <section aria-labelledby="headline">
-   <div class="eyebrow">Wintec · Industry Internship 2026</div>
-   <h1 id="headline">From spreadsheets to <span>smarter scheduling.</span></h1>
-   <p>Explore a teaching timetable management system built for importing Excel schedules, checking conflicts, reviewing changes, and exporting print-ready timetables.</p>
-   <a class="button" href="https://github.com/CFIT-Timetable-Development/CFIT-Timetable-System">Explore the project on GitHub ↗</a>
-  </section>
-  <section class="note" aria-label="Showcase status"><strong>Full product showcase coming soon.</strong> We are preparing application walkthroughs, technical highlights, and a cinematic product film. This web address will stay the same.</section>
-  <footer>A 2026 Wintec industry internship software project. Mobile-first preview — more coming soon.</footer>
- </main>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" data-header>
+    <div class="header-inner">
+      <a class="brand" href="#top">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <rect x="1" y="1" width="30" height="30" rx="8" fill="#0d2a44" stroke="#2fd3b5" stroke-opacity=".55"/>
+          <rect x="7" y="8" width="5" height="9" rx="1.5" fill="#2fd3b5"/>
+          <rect x="13.5" y="8" width="5" height="5" rx="1.5" fill="#39c7e8"/>
+          <rect x="13.5" y="14.5" width="5" height="9" rx="1.5" fill="#39c7e8" fill-opacity=".55"/>
+          <rect x="20" y="8" width="5" height="12" rx="1.5" fill="#2fd3b5" fill-opacity=".7"/>
+          <rect x="7" y="18.5" width="5" height="5" rx="1.5" fill="#e86a59"/>
+        </svg>
+        <span>CFIT Timetable</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="sr-only">Menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Sections" data-nav>
+        <ul>
+          <li><a href="#film">Film</a></li>
+          <li><a href="#workflow">Workflow</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#engineering">Engineering</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+        <a class="nav-cta" href="#film" data-watch-film>
+          <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 6.6v6.8l5.4-3.4z" fill="currentColor"/></svg>
+          Watch the film
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- 01 · Hero -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="wrap hero-copy">
+        <p class="eyebrow"><span>Wintec Industry Internship 2026</span><span class="dot" aria-hidden="true">·</span><span>Centre for Information Technology</span></p>
+        <h1 id="hero-title">From Spreadsheets to <span class="accent">Smarter Scheduling.</span></h1>
+        <p class="lede">A full-stack timetable management platform transforming complex Excel workflows into visual, validated and controlled scheduling.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#film" data-watch-film>
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 6.6v6.8l5.4-3.4z" fill="currentColor"/></svg>
+            Watch Product Film
+          </a>
+          <a class="btn btn-ghost" href="#features">Explore Features
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 4v11m0 0-4.5-4.5M10 15l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <figure class="hero-shot">
+          <div class="window">
+            <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>CFIT Timetable · 2026 S2 · Day view</span></div>
+            <div class="window-body">
+              <button class="shot shot-bare" type="button" data-zoom data-full="assets/img/hero-day-2400.webp" data-caption="The Day view right after a term is imported: one column per Stage, one card per session, 0 findings. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/hero-day-1600.webp" srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1600.webp 1600w, assets/img/hero-day-2400.webp 2400w" sizes="(min-width: 1400px) 1280px, 94vw" width="2400" height="1350" alt="The CFIT Timetable Day view for term 2026 S2, Version 1: one column per Stage from S1 to L8 and colour-coded session cards from 08:00 to 18:00. The status row reads 0 findings, current and clean." fetchpriority="high" decoding="async">
+              </button>
+              <span class="hl" style="--x:25.8%;--y:5.9%;--w:13.4%;--h:3.7%" aria-hidden="true"><span class="hl-label hl-above">Validated: 0 findings</span></span>
+              <span class="hl" style="--x:30.4%;--y:29.7%;--w:11.3%;--h:20%" aria-hidden="true"><span class="hl-label hl-below">One card per session</span></span>
+            </div>
+          </div>
+          <figcaption class="note">The real application. Every Module, person and room on this page is fictional demonstration data.</figcaption>
+        </figure>
+      </div>
+
+      <ul class="wrap proof" aria-label="At a glance">
+        <li><strong>3 workbooks in</strong><span>one checked timetable out</span></li>
+        <li><strong>Every save</strong><span>a Version you can restore</span></li>
+        <li><strong>Excel &amp; PDF</strong><span>ready to share and print</span></li>
+        <li><strong>Self-hosted</strong><span>deployed on Wintec's server</span></li>
+      </ul>
+    </section>
+
+    <!-- 02 · Film -->
+    <section class="film section" id="film" aria-labelledby="film-title">
+      <div class="wrap">
+        <header class="section-head center" data-reveal>
+          <p class="kicker"><span>02</span> Product film</p>
+          <h2 id="film-title">The whole workflow, in a hundred seconds.</h2>
+          <p class="section-lede">Recorded from the real application with fictional demonstration data: a term is imported, two room clashes are found and fixed, sessions are reshaped, and the timetable goes out as PDF and Excel.</p>
+        </header>
+
+        <div class="player" data-player data-reveal>
+          <div class="player-frame">
+            <video id="film-video" controls preload="none" playsinline poster="assets/img/film-poster-1920.webp" width="1920" height="1080" aria-describedby="film-desc">
+              <source src="assets/video/cfit-product-film-1080p60.mp4" type="video/mp4">
+              <track kind="chapters" src="assets/video/chapters.vtt" srclang="en" label="Chapters" default>
+              <a href="assets/video/cfit-product-film-1080p60.mp4">Download the product film (MP4, 1080p)</a>
+            </video>
+            <button class="player-start" type="button" data-player-start hidden>
+              <span class="player-pill">
+                <span class="play-disc" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span>
+                <span class="player-start-text">Play film <span class="muted">1:41 · sound on</span></span>
+              </span>
+            </button>
+          </div>
+          <p class="player-desc" id="film-desc">The film has music and sound effects but no narration; every point it makes is written on screen. Chapters and the on-screen text are below.</p>
+
+          <ol class="chapters" aria-label="Film chapters" data-chapters>
+            <li><button type="button" data-time="0"><span class="t">0:00</span>The spreadsheet problem</button></li>
+            <li><button type="button" data-time="18"><span class="t">0:18</span>Import, every row checked</button></li>
+            <li><button type="button" data-time="26.2"><span class="t">0:26</span>Day, Stage and Week views</button></li>
+            <li><button type="button" data-time="36.3"><span class="t">0:36</span>A room clash, fixed</button></li>
+            <li><button type="button" data-time="54.2"><span class="t">0:54</span>A coordinated fix</button></li>
+            <li><button type="button" data-time="80.5"><span class="t">1:20</span>Drag, split and merge</button></li>
+            <li><button type="button" data-time="90.8"><span class="t">1:30</span>History, PDF and Excel</button></li>
+            <li><button type="button" data-time="97.3"><span class="t">1:37</span>From complexity to clarity</button></li>
+          </ol>
+
+          <details class="transcript">
+            <summary>Read the film's on-screen text</summary>
+            <dl>
+              <dt>0:00 · The spreadsheet problem</dt>
+              <dd>Legacy spreadsheet workflow: multiple spreadsheets, manual cross-checking, time-consuming updates, conflicts are harder to spot manually. “One connected scheduling workspace.” “From spreadsheets to an interactive workspace.”</dd>
+              <dt>0:18 · Import</dt>
+              <dd>“Import it. Every row checked.” “Nothing is saved until you confirm.” “A live timetable in seconds.”</dd>
+              <dt>0:26 · Views</dt>
+              <dd>“Every Stage. Every room. Every tutor.” “One Stage, the whole week.” “Click any session for the full picture.”</dd>
+              <dt>0:36 · A room clash</dt>
+              <dd>“Another timetable.” “Then the clashes start.” “A clear fix, in plain words.” “Preview first.” “Saved as a new Version.”</dd>
+              <dt>0:54 · A coordinated fix</dt>
+              <dd>“Some clashes have no simple fix.” “So it moves three sessions together.” “Moving the masterclass alone won't work.” “See every move before it happens.” “0 findings. Current and clean.”</dd>
+              <dt>1:20 · Reshaping sessions</dt>
+              <dd>“Drag.” “Split.” “Merge, checked before it's applied.”</dd>
+              <dt>1:30 · History and output</dt>
+              <dd>“Every change is a Version you can restore.” “Print-ready PDFs.” “Back to Excel, ready to re-import.”</dd>
+              <dt>1:37 · Closing</dt>
+              <dd>“CFIT Timetable System — From Complexity to Clarity.” “Demonstration data is fictional.”</dd>
+            </dl>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · From Excel to timetable -->
+    <section class="section workflow" id="workflow" aria-labelledby="workflow-title">
+      <div class="wrap">
+        <div class="before">
+          <header class="before-copy" data-reveal>
+            <p class="kicker"><span>03</span> From Excel to timetable</p>
+            <h2 id="workflow-title"><span class="chaos">From chaos</span> <span class="clarity">to clarity.</span></h2>
+            <p>Every term used to begin as three Excel workbooks: the rooms, the Modules and their Tutors, and the timetable itself. Keeping them in step meant checking rows against each other by hand, and a double-booked room could hide in plain sight.</p>
+            <ul class="friction">
+              <li>Three spreadsheets to keep in step</li>
+              <li>Rooms, Modules and Tutors cross-checked by hand</li>
+              <li>Every change updated in several places</li>
+              <li>Clashes that are hard to spot by eye</li>
+            </ul>
+          </header>
+          <figure class="before-shot" data-reveal>
+            <button class="shot" type="button" data-zoom data-full="assets/img/before-workbooks-2000.webp" data-caption="A term starts as three workbooks: the rooms, the timetable, and the Modules and their Tutors. Synthetic demonstration workbooks, from the product film.">
+              <span class="sr-only">Enlarge picture: </span>
+              <img src="assets/img/before-workbooks-1200.webp" srcset="assets/img/before-workbooks-720.webp 720w, assets/img/before-workbooks-1200.webp 1200w, assets/img/before-workbooks-2000.webp 2000w" sizes="(min-width: 1100px) 640px, 92vw" width="2000" height="906" alt="Three spreadsheets side by side under the heading Legacy spreadsheet workflow: Rooms, Timetable, and Modules and Tutors, with one session's row highlighted in each and lines joining them." loading="lazy" decoding="async">
+            </button>
+            <figcaption>The three workbooks a term starts from, cross-checked row by row. Synthetic demonstration workbooks.</figcaption>
+          </figure>
+        </div>
+
+        <header class="section-head flow-head" data-reveal>
+          <h3 class="h2-like">One workspace. Six steps.</h3>
+          <p class="section-lede">The same data, now in one place that checks it, shows it and keeps every change.</p>
+        </header>
+
+        <div class="flow" data-flow>
+          <ol class="flow-rail" aria-hidden="true" data-flow-rail>
+            <li>Import</li><li>Validate</li><li>Edit</li><li>Suggest fixes</li><li>Review</li><li>Export</li>
+          </ol>
+          <ol class="flow-steps">
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">01</p>
+                <h4>Import</h4>
+                <p class="flow-title">Bring in the term.</p>
+                <p>Upload the rooms, the Modules and Tutors, and the term's timetable. Every row is read and checked, and you see what will change before you confirm. Nothing is saved until then.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/import-check-1600.webp" data-caption="Importing a timetable, Check step: 99 source rows, the CFIT Standard template, 0 errors and 0 warnings. Nothing is saved yet. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/import-check-960.webp" srcset="assets/img/import-check-960.webp 960w, assets/img/import-check-1600.webp 1600w" sizes="(min-width: 1100px) 720px, 92vw" width="1600" height="1050" alt="The Import page checking a timetable workbook: 99 source rows, 67 Activities and 95 scheduled sessions, 0 errors and 0 warnings, with a Review changes button." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">02</p>
+                <h4>Validate</h4>
+                <p class="flow-title">See every problem at once.</p>
+                <p>Validate lists double-booked rooms and staff, rooms that are too small, and staff who are unavailable or not set up to teach a Module. Each problem is also marked on the timetable itself.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/conflict-2000.webp" data-caption="Validation findings: two rooms are double-booked, and the clashing sessions are marked WARNING on the grid. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/conflict-1200.webp" srcset="assets/img/conflict-720.webp 720w, assets/img/conflict-1200.webp 1200w, assets/img/conflict-2000.webp 2000w" sizes="(min-width: 1100px) 720px, 92vw" width="2000" height="886" alt="Validation findings for the current timetable: room HB1.02 is double-booked on Wednesday 10:00 to 12:00 and room TW0.HUB on Monday 08:00 to 10:00, each with a Suggest fixes button. Below, two session cards carry a WARNING badge." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">03</p>
+                <h4>Edit</h4>
+                <p class="flow-title">Change it on screen.</p>
+                <p>Drag a session to a new time, or edit its day, time and room. Split a long session or merge two Streams, with a preview first. Each change is checked again as you make it.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/drag-drop-1600.webp" data-caption="A session dropped at 15:00–17:00; the Activity Inspector shows the new time before the change is applied. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/drag-drop-960.webp" srcset="assets/img/drag-drop-960.webp 960w, assets/img/drag-drop-1600.webp 1600w" sizes="(min-width: 1100px) 720px, 92vw" width="1600" height="900" alt="Editing the timetable: a session card has been dragged to 15:00 to 17:00 on Wednesday, and the Schedule editing panel beside the grid shows Start Time 15:00 and End Time 17:00, not applied yet." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">04</p>
+                <h4>Suggest fixes</h4>
+                <p class="flow-title">Let the search suggest.</p>
+                <p>Ask for fixes and get changes that solve a problem without creating a new one, even when three sessions have to move together. You choose; nothing changes until you click Apply.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/suggest-fixes-1600.webp" data-caption="Suggest fixes offers a coordinated fix that moves three sessions together: it fixes 1 problem and creates none. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/suggest-fixes-960.webp" srcset="assets/img/suggest-fixes-960.webp 960w, assets/img/suggest-fixes-1600.webp 1600w" sizes="(min-width: 1100px) 620px, 92vw" width="1600" height="1456" alt="Two sessions marked WARNING share room TW0.HUB. In the Activity Inspector, Suggest fixes lists a fix that moves three sessions and fixes 1 problem, creates none, with an Apply button." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">05</p>
+                <h4>Review</h4>
+                <p class="flow-title">Know exactly what changed.</p>
+                <p>Every save becomes a Version. See what has changed since the import, compare it side by side, and restore any earlier Version if you need to.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/clean-v3-1600.webp" data-caption="After the fix: Version 3, 0 findings, current and clean. The changed session is marked EDITED and the Timetable comparison explains what changed since the import. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/clean-v3-960.webp" srcset="assets/img/clean-v3-960.webp 960w, assets/img/clean-v3-1600.webp 1600w" sizes="(min-width: 1100px) 720px, 92vw" width="1600" height="900" alt="The timetable at Version 3 with 0 findings, current and clean, and 4 edits since import. One Thursday session is highlighted as EDITED, and the Timetable comparison panel says it has saved changes since import: time and day changed." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+            <li class="flow-step" data-step>
+              <div class="flow-text">
+                <p class="flow-num">06</p>
+                <h4>Export</h4>
+                <p class="flow-title">Send it out.</p>
+                <p>Download a Change Review workbook to check, a clean Standard workbook that imports again, or print-ready A4 PDFs by day or by Stage.</p>
+              </div>
+              <figure class="flow-figure">
+                <button class="shot" type="button" data-zoom data-full="assets/img/print-dialog-1600.webp" data-caption="Print: the app makes an A4 landscape PDF by day, one column per Stage, 5 pages, with a preview. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/print-dialog-960.webp" srcset="assets/img/print-dialog-960.webp 960w, assets/img/print-dialog-1600.webp 1600w" sizes="(min-width: 1100px) 640px, 92vw" width="1600" height="1348" alt="The Print dialog set to By day, all teaching weeks, A4 landscape: Version 3, no problems found, 5 pages, with a preview of the Monday page and Download PDF and Print buttons." loading="lazy" decoding="async">
+                </button>
+              </figure>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 · Features -->
+    <section class="section features" id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span>04</span> Features</p>
+          <h2 id="features-title">Every step checked. Every change kept.</h2>
+          <p class="section-lede">Eight capabilities that turn a term's workbooks into a timetable people can trust. Each picture below is the real application, recorded with fictional demonstration data. Select a picture to enlarge it.</p>
+        </header>
+
+        <!-- F1 Import -->
+        <article class="feature feature-split" aria-labelledby="f-import">
+          <div class="feature-copy" data-reveal>
+            <p class="feature-tag">Excel import and validation</p>
+            <h3 id="f-import">Start from the workbooks you already have.</h3>
+            <p>The term arrives in the CFIT Standard Timetable template, with its Rooms and its Module &amp; Tutor list. The import reads every row, reports errors and warnings, and shows what will happen before anything is saved.</p>
+            <ul class="ticks">
+              <li>Checks every row first</li>
+              <li>Shows what will change</li>
+              <li>Saves nothing until you confirm</li>
+            </ul>
+          </div>
+          <div class="deck" data-reveal>
+            <figure class="deck-back">
+              <button class="shot" type="button" data-zoom data-full="assets/img/import-confirm-1600.webp" data-caption="Import, Confirm step: this file starts the 2026 S2 timetable with 67 Activities and 95 scheduled sessions. Nothing is saved until you confirm. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/import-confirm-960.webp" srcset="assets/img/import-confirm-960.webp 960w, assets/img/import-confirm-1600.webp 1600w" sizes="(min-width: 1100px) 560px, 80vw" width="1600" height="962" alt="The Confirm step of an import: the upload, check and review steps are complete, and What will happen says the file starts the 2026 S2 timetable. Nothing is saved until you confirm, with an Import timetable button." loading="lazy" decoding="async">
+              </button>
+            </figure>
+            <figure class="deck-front">
+              <button class="shot" type="button" data-zoom data-full="assets/img/import-check-1600.webp" data-caption="Importing a timetable, Check step: 99 source rows, the CFIT Standard template, 0 errors and 0 warnings. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/import-check-960.webp" srcset="assets/img/import-check-960.webp 960w, assets/img/import-check-1600.webp 1600w" sizes="(min-width: 1100px) 560px, 80vw" width="1600" height="1050" alt="The Check step of an import: 99 source rows, 67 Activities, 95 scheduled sessions, template CFIT Standard v1, 0 errors and 0 warnings." loading="lazy" decoding="async">
+              </button>
+            </figure>
+          </div>
+        </article>
+
+        <!-- F2 Workspace -->
+        <article class="feature feature-wide" aria-labelledby="f-workspace">
+          <div class="feature-copy center" data-reveal>
+            <p class="feature-tag">Visual timetable workspace</p>
+            <h3 id="f-workspace">One timetable, three ways to look at it.</h3>
+            <p>The Day view gives each Stage its own column; the Stage view follows one Stage through the week; the Week view puts Monday to Friday side by side. Select any session and the Activity Inspector shows when and where it runs, who teaches it and the Module behind it.</p>
+          </div>
+          <div class="tabs" data-tabs data-reveal>
+            <div class="tablist" role="tablist" aria-label="Workspace views" hidden>
+              <button type="button" role="tab" id="tab-day" aria-controls="panel-day" aria-selected="true">Day</button>
+              <button type="button" role="tab" id="tab-stage" aria-controls="panel-stage" aria-selected="false" tabindex="-1">Stage</button>
+              <button type="button" role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1">Week</button>
+              <button type="button" role="tab" id="tab-inspector" aria-controls="panel-inspector" aria-selected="false" tabindex="-1"><span class="tab-long">Activity </span>Inspector</button>
+            </div>
+            <div class="tabpanels window">
+              <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>CFIT Timetable · 2026 S2</span></div>
+              <div class="tabpanel" role="tabpanel" id="panel-day" aria-labelledby="tab-day">
+                <button class="shot shot-bare" type="button" data-zoom data-full="assets/img/hero-day-2400.webp" data-caption="Day view: one column per Stage, Monday. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/hero-day-1600.webp" srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1600.webp 1600w, assets/img/hero-day-2400.webp 2400w" sizes="(min-width: 1300px) 1180px, 94vw" width="2400" height="1350" alt="Day view for Monday: columns S1 to S6 and L8, with session cards showing the Module code, weeks, title, time, room and Tutor." loading="lazy" decoding="async">
+                </button>
+              </div>
+              <div class="tabpanel" role="tabpanel" id="panel-stage" aria-labelledby="tab-stage">
+                <button class="shot shot-bare" type="button" data-zoom data-full="assets/img/view-stage-1600.webp" data-caption="Stage view: Stage S1 from Monday to Friday. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/view-stage-1600.webp" srcset="assets/img/view-stage-960.webp 960w, assets/img/view-stage-1600.webp 1600w" sizes="(min-width: 1300px) 1180px, 94vw" width="1600" height="900" alt="Stage view for Stage S1: one column per weekday from Monday to Friday, with that Stage's sessions in each." loading="lazy" decoding="async">
+                </button>
+              </div>
+              <div class="tabpanel" role="tabpanel" id="panel-week" aria-labelledby="tab-week">
+                <button class="shot shot-bare" type="button" data-zoom data-full="assets/img/view-week-1600.webp" data-caption="Week view: Monday to Friday side by side, every Stage. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/view-week-1600.webp" srcset="assets/img/view-week-960.webp 960w, assets/img/view-week-1600.webp 1600w" sizes="(min-width: 1300px) 1180px, 94vw" width="1600" height="900" alt="Week view: the whole teaching week from Monday to Friday, with every Stage's sessions arranged under each day." loading="lazy" decoding="async">
+                </button>
+              </div>
+              <div class="tabpanel" role="tabpanel" id="panel-inspector" aria-labelledby="tab-inspector">
+                <button class="shot shot-bare" type="button" data-zoom data-full="assets/img/view-inspector-1600.webp" data-caption="The Activity Inspector beside the grid: when and where, who, and the Module. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/view-inspector-1600.webp" srcset="assets/img/view-inspector-960.webp 960w, assets/img/view-inspector-1600.webp 1600w" sizes="(min-width: 1300px) 1180px, 94vw" width="1600" height="900" alt="A selected session opens the Activity Inspector beside the grid, listing its three weekly placements with time and room, its Tutor, a Suggest fixes button and its Module and Stream." loading="lazy" decoding="async">
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- F3 Conflicts -->
+        <article class="feature feature-bleed" aria-labelledby="f-conflicts">
+          <figure class="bleed-shot" data-reveal>
+            <button class="shot" type="button" data-zoom data-full="assets/img/conflict-2000.webp" data-caption="Validation findings: HB1.02 is double-booked on Wednesday and TW0.HUB on Monday. The clashing sessions carry a WARNING badge on the grid. Fictional demonstration data.">
+              <span class="sr-only">Enlarge picture: </span>
+              <img src="assets/img/conflict-1200.webp" srcset="assets/img/conflict-720.webp 720w, assets/img/conflict-1200.webp 1200w, assets/img/conflict-2000.webp 2000w" sizes="(min-width: 1300px) 1240px, 96vw" width="2000" height="886" alt="Validation findings: room HB1.02 double-booked on Wednesday 10:00 to 12:00 for two Modules, and room TW0.HUB on Monday 08:00 to 10:00. On the grid below, the two Wednesday sessions in HB1.02 each show an amber WARNING badge." loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <div class="feature-columns" data-reveal>
+            <div>
+              <p class="feature-tag">Conflict detection</p>
+              <h3 id="f-conflicts">Clashes surface on their own.</h3>
+            </div>
+            <div>
+              <p>Validate finds double-booked rooms and staff, rooms too small for a session, and staff who are unavailable or not set up to teach a Module. Each finding names the room, the day, the weeks and both sessions, and the sessions are flagged on the grid.</p>
+              <p class="fine">Not checked yet: students' clashes and teaching hours. Those rules wait on a decision from the client.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- F4 Suggest fixes -->
+        <article class="feature feature-fixes" aria-labelledby="f-fixes">
+          <div class="feature-copy" data-reveal>
+            <p class="feature-tag">Suggest fixes</p>
+            <h3 id="f-fixes">Fixes you can see before you choose.</h3>
+            <p>Suggest fixes searches for changes that solve a problem without creating a new one. When no single move works, it finds coordinated fixes that move several sessions together, and previews each one on the grid. Applying a fix saves it as a new Version, so History can undo it.</p>
+            <blockquote class="pull"><p>The searches suggest. People decide.</p></blockquote>
+          </div>
+          <ol class="storyboard">
+            <li class="sb-main" data-reveal>
+              <figure>
+                <button class="shot" type="button" data-zoom data-full="assets/img/suggest-fixes-1600.webp" data-caption="Step 1, ask: a coordinated fix moves three sessions together and fixes 1 problem, creates none. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/suggest-fixes-960.webp" srcset="assets/img/suggest-fixes-960.webp 960w, assets/img/suggest-fixes-1600.webp 1600w" sizes="(min-width: 1100px) 560px, 92vw" width="1600" height="1456" alt="Suggest fixes in the Activity Inspector: a fix that moves DSAI704, NSEC705 and SWDV603 together. Fixes 1 problem, creates none. Apply." loading="lazy" decoding="async">
+                </button>
+                <figcaption><b>1 · Ask.</b> No single move works, so the fix moves three sessions together.</figcaption>
+              </figure>
+            </li>
+            <li data-reveal>
+              <figure>
+                <button class="shot" type="button" data-zoom data-full="assets/img/fix-preview-2000.webp" data-caption="Step 2, preview: the coordinated fix on the grid before anything is saved; the old slot is dashed. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/fix-preview-1200.webp" srcset="assets/img/fix-preview-720.webp 720w, assets/img/fix-preview-1200.webp 1200w, assets/img/fix-preview-2000.webp 2000w" sizes="(min-width: 1100px) 560px, 92vw" width="2000" height="1142" alt="A preview banner above the grid describes the fix, with Apply and Back to suggestions. On Thursday, the moved session is outlined in its new slot and its old slot is dashed." loading="lazy" decoding="async">
+                </button>
+                <figcaption><b>2 · Preview.</b> The fix is drawn on the grid; nothing is saved yet.</figcaption>
+              </figure>
+            </li>
+            <li data-reveal>
+              <figure>
+                <button class="shot" type="button" data-zoom data-full="assets/img/clean-v3-1600.webp" data-caption="Step 3, apply: saved as Version 3 with 0 findings, current and clean. Fictional demonstration data.">
+                  <span class="sr-only">Enlarge picture: </span>
+                  <img src="assets/img/clean-v3-960.webp" srcset="assets/img/clean-v3-960.webp 960w, assets/img/clean-v3-1600.webp 1600w" sizes="(min-width: 1100px) 560px, 92vw" width="1600" height="900" alt="The timetable after Apply: Version 3, 0 findings, current and clean, with the moved session marked EDITED." loading="lazy" decoding="async">
+                </button>
+                <figcaption><b>3 · Apply.</b> Version 3: 0 findings, current and clean.</figcaption>
+              </figure>
+            </li>
+          </ol>
+        </article>
+
+        <!-- F5 Drag and drop -->
+        <article class="feature feature-split feature-reverse" aria-labelledby="f-drag">
+          <div class="feature-copy" data-reveal>
+            <p class="feature-tag">Drag-and-drop editing</p>
+            <h3 id="f-drag">Pick it up. Put it down.</h3>
+            <p>Start editing, then drag a session to its new time. The editor follows the drop, each move is checked again, and you are warned if it creates a clash. Save Draft with a short note and the change becomes the next Version.</p>
+            <p class="fine">A real recording, shown silently on a loop.</p>
+          </div>
+          <figure class="loop" data-loop data-reveal>
+            <div class="window">
+              <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>Editing · Wednesday</span></div>
+              <div class="window-body">
+                <video muted loop playsinline preload="none" poster="assets/img/drag-loop-poster-1600.webp" width="1600" height="1014" aria-describedby="drag-desc" data-loop-video>
+                  <source src="assets/video/drag-loop.mp4" type="video/mp4">
+                </video>
+                <button class="loop-toggle" type="button" data-loop-toggle hidden>
+                  <span class="loop-icon" aria-hidden="true"></span><span data-loop-label>Play</span>
+                </button>
+                <p class="sr-only" id="drag-desc">A silent recording: a session card is dragged from 10:00 down to 15:00 on Wednesday, and the Start Time and End Time fields in the editor follow it to 15:00 and 17:00.</p>
+              </div>
+            </div>
+            <figcaption>Dragging a session from 10:00 to 15:00; the start and end times follow. Fictional demonstration data.</figcaption>
+          </figure>
+        </article>
+
+        <!-- F6 Split and merge -->
+        <article class="feature feature-pair" aria-labelledby="f-structure">
+          <div class="feature-copy center" data-reveal>
+            <p class="feature-tag">Split and merge</p>
+            <h3 id="f-structure">Reshape sessions, with the result shown first.</h3>
+            <p>Split a 4-hour session into 2 × 2 h. Merge two Streams of a Module when their length, weeks, type and Tutor match: the dialog adds up the students and checks that the room fits. Both show the result before you apply it.</p>
+          </div>
+          <div class="pair">
+            <figure class="tall" data-reveal>
+              <button class="shot" type="button" data-zoom data-full="assets/img/split-1080.webp" data-caption="Split 4 h into 2 × 2 h: the original session, the two sessions after the split, and Apply split. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/split-640.webp" srcset="assets/img/split-640.webp 640w, assets/img/split-1080.webp 1080w" sizes="(min-width: 900px) 400px, 80vw" width="1080" height="1720" alt="The Activity Inspector's Split into 2 × 2 h panel: the original Thursday 08:00 to 12:00 session, then Session 1 from 08:00 to 10:00 and Session 2 from 10:00 to 12:00 in the same room and weeks, with Apply split and Cancel." loading="lazy" decoding="async">
+              </button>
+              <figcaption><b>Split.</b> One 4-hour lab becomes two 2-hour sessions.</figcaption>
+            </figure>
+            <figure class="tall" data-reveal>
+              <button class="shot" type="button" data-zoom data-full="assets/img/merge-1120.webp" data-caption="Merge Activities: two Streams of one Module, 14 + 12 = 26 students, the same Tutor and weeks, and a room with 30 seats. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/merge-640.webp" srcset="assets/img/merge-640.webp 640w, assets/img/merge-1120.webp 1120w" sizes="(min-width: 900px) 400px, 80vw" width="1120" height="2080" alt="The Merge Activities dialog combining Streams N and P of one Module on Thursday 15:00 to 17:00: 14 + 12 = 26 students, the same Tutor, the same teaching weeks, and a room with 30 seats for 26 students." loading="lazy" decoding="async">
+              </button>
+              <figcaption><b>Merge.</b> 14 + 12 = 26 students, same Tutor, a room that fits.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <!-- F7 History -->
+        <article class="feature feature-split" aria-labelledby="f-history">
+          <div class="feature-copy" data-reveal>
+            <p class="feature-tag">Version history</p>
+            <h3 id="f-history">Nothing is ever overwritten.</h3>
+            <p>Each save is kept as a Version that can't be overwritten. History lists every Version with its note and exactly what changed, and restores any Version of the term as a new one.</p>
+            <ol class="versions" aria-label="The Versions in the film's demonstration">
+              <li><b>Version 1</b><span>Imported from the term's workbook</span></li>
+              <li><b>Version 2</b><span>Room clash fixed: one session moves room</span></li>
+              <li class="is-current"><b>Version 3</b><span>Coordinated fix: two time changes, one room change</span></li>
+            </ol>
+          </div>
+          <figure class="tall history-shot" data-reveal>
+            <button class="shot" type="button" data-zoom data-full="assets/img/history-1120.webp" data-caption="Timetable history: Version 3, its note and the three changes from Version 2. Fictional demonstration data.">
+              <span class="sr-only">Enlarge picture: </span>
+              <img src="assets/img/history-640.webp" srcset="assets/img/history-640.webp 640w, assets/img/history-1120.webp 1120w" sizes="(min-width: 900px) 420px, 80vw" width="1120" height="2080" alt="The Timetable history dialog: the current timetable, 2026 S2 Version 3, with its suggested-fix note and three changes from the previous Version, two time changes and one room change, with View changes and View version buttons." loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </article>
+
+        <!-- F8 Export -->
+        <article class="feature feature-export" aria-labelledby="f-export">
+          <div class="feature-copy" data-reveal>
+            <p class="feature-tag">Export and PDF printing</p>
+            <h3 id="f-export">Ready for print. Ready for Excel.</h3>
+            <p>Print A4 landscape PDFs by day or by Stage, made right in the browser. Export the exact saved Version as a Change Review workbook for checking, or as a clean Standard Timetable workbook that imports again.</p>
+          </div>
+          <div class="paper-stack" data-reveal>
+            <figure class="paper">
+              <button class="shot shot-paper" type="button" data-zoom data-full="assets/img/pdf-day-1600.webp" data-caption="Page 1 of a PDF by day, made by the app: Monday, one column per Stage, A4 landscape. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/pdf-day-960.webp" srcset="assets/img/pdf-day-960.webp 960w, assets/img/pdf-day-1600.webp 1600w" sizes="(min-width: 1100px) 760px, 92vw" width="1600" height="1132" alt="Page 1 of the timetable PDF: CFIT Timetable 2026 S2, Monday, all teaching weeks, with one column per Stage and each session's Module, time, room and Tutor." loading="lazy" decoding="async">
+              </button>
+              <figcaption>A PDF page, exactly as the app makes it.</figcaption>
+            </figure>
+            <figure class="paper-dialog">
+              <button class="shot" type="button" data-zoom data-full="assets/img/export-dialog-1160.webp" data-caption="Export timetable: the exact saved Version 3 as a CFIT Change Review workbook, 100 rows, 4 of them changed. Fictional demonstration data.">
+                <span class="sr-only">Enlarge picture: </span>
+                <img src="assets/img/export-dialog-640.webp" srcset="assets/img/export-dialog-640.webp 640w, assets/img/export-dialog-1160.webp 1160w" sizes="(min-width: 1100px) 380px, 70vw" width="1160" height="860" alt="The Export timetable dialog: workbook format CFIT Change Review (.xlsx), ready, Version 3, 100 rows, 4 changed rows, and a Download CFIT Change Review button." loading="lazy" decoding="async">
+              </button>
+            </figure>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 05 · Engineering -->
+    <section class="section engineering" id="engineering" aria-labelledby="engineering-title">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span>05</span> Engineering and architecture</p>
+          <h2 id="engineering-title">Full-stack engineering for real-world timetabling.</h2>
+          <p class="section-lede">A modular Java monolith behind a typed React client, a versioned PostgreSQL schema, and a delivery pipeline that tests the whole stack in a real browser before anything ships.</p>
+        </header>
+
+        <figure class="arch" data-reveal>
+          <div class="arch-grid">
+            <div class="arch-node arch-user">
+              <p class="arch-label">In the browser</p>
+              <p class="arch-title">React 19 + TypeScript</p>
+              <p>Built with Vite. Typed <code>fetch</code> calls check the shape of every response. PDFs are made right here.</p>
+            </div>
+            <div class="arch-link" aria-hidden="true"><span>HTTPS</span></div>
+            <div class="arch-server">
+              <p class="arch-zone">Wintec server · Docker Compose</p>
+              <div class="arch-row">
+                <div class="arch-node">
+                  <p class="arch-label">Web</p>
+                  <p class="arch-title">nginx</p>
+                  <p>Serves the app and passes <code>/api</code> to the backend.</p>
+                </div>
+                <div class="arch-link" aria-hidden="true"><span>REST /api</span></div>
+                <div class="arch-node arch-core">
+                  <p class="arch-label">Backend · modular monolith</p>
+                  <p class="arch-title">Spring Boot 4.1 · Java 21</p>
+                  <ul class="arch-modules" aria-label="Feature modules">
+                    <li>Excel import</li><li>Validation</li><li>Suggest fixes</li><li>Draft save</li><li>History</li><li>Archive</li><li>Export</li><li>Resources</li>
+                  </ul>
+                  <p>JPA for data; Apache POI reads and writes the workbooks. OpenAPI contracts, checked by tests.</p>
+                </div>
+                <div class="arch-link" aria-hidden="true"><span>JPA · SQL</span></div>
+                <div class="arch-node arch-db">
+                  <p class="arch-label">Data</p>
+                  <p class="arch-title">PostgreSQL 17</p>
+                  <p>Schema in Flyway migrations V1–V31. Versions are kept, never overwritten.</p>
+                </div>
+              </div>
+            </div>
+            <div class="arch-io">
+              <p><span class="io-badge">In</span> Rooms, Modules &amp; Tutors, and timetable workbooks (.xlsx)</p>
+              <p><span class="io-badge io-out">Out</span> Change Review and Standard workbooks (.xlsx), A4 PDFs</p>
+            </div>
+          </div>
+          <figcaption>How CFIT Timetable fits together: the browser app, nginx, the Spring Boot backend and PostgreSQL, all on Wintec's server in Docker Compose.</figcaption>
+        </figure>
+
+        <div class="eng-grid">
+          <div class="stack" data-reveal>
+            <h3 class="h3-small">The stack</h3>
+            <dl class="stack-list">
+              <div><dt>Frontend</dt><dd>React 19 · TypeScript · Vite</dd></div>
+              <div><dt>Backend</dt><dd>Java 21 · Spring Boot 4.1 · JPA · Apache POI</dd></div>
+              <div><dt>Data</dt><dd>PostgreSQL 17 · Flyway (31 migrations)</dd></div>
+              <div><dt>Interfaces</dt><dd>REST API · OpenAPI contracts · contract tests</dd></div>
+              <div><dt>Delivery</dt><dd>Docker Compose · nginx · GitHub Actions · GHCR (amd64 + arm64)</dd></div>
+              <div><dt>Testing</dt><dd>JUnit · Testcontainers · Vitest · Playwright</dd></div>
+            </dl>
+          </div>
+
+          <div class="pipeline" data-reveal>
+            <h3 class="h3-small">From commit to verified release</h3>
+            <ol class="pipe">
+              <li><b>Pull request</b><span>Branch from main. Local unit, browser and critical-set results go in the pull request.</span></li>
+              <li><b>Squash and merge</b><span>The project owner reviews and merges into <code>main</code>.</span></li>
+              <li class="pipe-ci"><b>CI on GitHub Actions</b><span>Backend unit and integration tests, frontend tests, type check and build, five browser test groups and infrastructure checks. About 12 minutes.</span></li>
+              <li><b>Publish</b><span>Only a green run publishes images for amd64 and arm64 to GHCR, tagged by commit.</span></li>
+              <li><b>Deploy Wintec</b><span>Backs up the database with <code>pg_dump</code> and checks it, installs the new version, then runs health checks.</span></li>
+            </ol>
+            <p class="fine">If CI fails, nothing deploys. Automatic deploys have been paused since 7 November 2026; the server keeps running the last deployed version.</p>
+          </div>
+        </div>
+
+        <div class="metrics" data-reveal>
+          <h3 class="h3-small">Measured, not claimed</h3>
+          <ul class="metric-grid">
+            <li><b>131</b><span>backend unit test classes</span></li>
+            <li><b>104</b><span>integration test classes on a real PostgreSQL (Testcontainers)</span></li>
+            <li><b>190</b><span>frontend Vitest files</span></li>
+            <li><b>49</b><span>Playwright browser specs on the full stack</span></li>
+            <li class="metric-wide"><b>4,466 / 4,466</b><span>full-matrix rows passed: every Split, Merge and Stream action on every starting shape</span></li>
+            <li class="metric-wide"><b>0 · 0 · 0</b><span>round trip of export, re-import and compare: nothing missing, added or different</span></li>
+          </ul>
+          <p class="fine">Test suite sizes on 6 November 2026. Full matrix and round trip at the 24 October 2026 feature freeze (commit <code>43d4766</code>). Source: the project README.</p>
+        </div>
+
+        <ul class="principles" data-reveal>
+          <li><h3>Checked at every boundary</h3><p>Imports check every row before saving. The client checks the shape of every API response, and contract tests hold the server to its OpenAPI specification.</p></li>
+          <li><h3>Versioned by design</h3><p>Saves create Versions that can't be overwritten; restoring one makes a new Version. The database schema evolves through numbered migrations.</p></li>
+          <li><h3>Released with a safety net</h3><p>Every past real bug is a named browser path in the critical set. A deploy backs up the database before it installs anything.</p></li>
+          <li><h3>Made to be handed over</h3><p>One package per feature, a twelve-chapter user manual, a developer handover and a log of every owner decision.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 06 · About -->
+    <section class="section about" id="about" aria-labelledby="about-title">
+      <div class="wrap about-grid">
+        <div class="about-copy" data-reveal>
+          <p class="kicker"><span>06</span> Project background</p>
+          <h2 id="about-title">A 2026 Wintec industry internship.</h2>
+          <p>CFIT Timetable was built in 2026 by Zhida Chen and Khylle Mauricio as a Wintec industry internship project at the Centre for Information Technology. It took a real scheduling workflow from Excel workbooks to a full-stack, self-hosted application deployed on Wintec's server, with a user manual and a developer handover for whoever looks after it next.</p>
+          <ul class="team" aria-label="Team">
+            <li><span class="avatar" aria-hidden="true">ZC</span><span class="who"><b>Zhida Chen</b><span>Developer</span></span></li>
+            <li><span class="avatar" aria-hidden="true">KM</span><span class="who"><b>Khylle Mauricio</b><span>Developer</span></span></li>
+          </ul>
+        </div>
+        <div class="resources" data-reveal>
+          <h3 class="h3-small">Behind the application</h3>
+          <p class="resources-lede">The source code and its documentation are kept in a private GitHub repository of the CFIT-Timetable-Development organisation. Alongside the code, it holds:</p>
+          <ul class="resource-list">
+            <li><b>A user manual</b><span>Twelve chapters, from the first import to export and print</span></li>
+            <li><b>A developer handover</b><span>Windows set-up, a code map, testing, CI and the backlog</span></li>
+            <li><b>A decision log</b><span>Every owner decision, in one place</span></li>
+            <li><b>Design and verification notes</b><span>How the main features were designed and checked</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="closing wrap" data-reveal>
+        <p class="closing-line"><span>Same data.</span> <span>Smarter tools.</span> <span class="accent">Clearer outcomes.</span></p>
+        <div class="cta-row center">
+          <a class="btn btn-primary" href="#film" data-watch-film>Watch the film</a>
+          <a class="btn btn-ghost" href="#workflow">See how it works</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><b>CFIT Timetable</b> · Wintec Industry Internship 2026</p>
+      <p>Every screen on this page shows fictional demonstration data. No cookies, no tracking.</p>
+      <p><a href="https://github.com/CFIT-Timetable-Development/CFIT-Showcase">This page on GitHub</a> · <a href="#top">Back to top</a></p>
+    </div>
+  </footer>
+
+  <dialog class="lightbox" aria-label="Enlarged picture" data-lightbox>
+    <div class="lightbox-inner">
+      <p class="lightbox-caption" data-lightbox-caption></p>
+    </div>
+    <button class="lb-btn lb-close" type="button" data-lightbox-close><span class="sr-only">Close</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <button class="lb-btn lb-prev" type="button" data-lightbox-prev><span class="sr-only">Previous picture</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="lb-btn lb-next" type="button" data-lightbox-next><span class="sr-only">Next picture</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </dialog>
 </body>
 </html>
