@@ -696,11 +696,35 @@ html:not(.js) .loop video { display: none; }
 .about-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(48px, 6vw, 96px); align-items: start; }
 .about-copy h2 { font-size: clamp(2.15rem, 1.3rem + 3.4vw, 4rem); font-weight: 820; letter-spacing: -0.042em; line-height: 1.04; margin-bottom: 26px; }
 .about-copy > p:not(.kicker) { font-size: 1.1rem; }
-.team { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 32px; }
-.team li { display: flex; align-items: center; gap: 14px; padding: 14px 20px 14px 14px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.025); }
 .avatar { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; font-weight: 760; font-size: 0.95rem; color: #04221f; background: linear-gradient(135deg, var(--teal), var(--cyan)); }
-.who { display: grid; line-height: 1.3; }
-.who span { color: var(--ink-3); font-size: 0.9rem; }
+
+/* Meet the Developers: two equal cards, each with three profile links. Side by side when each card gets at least
+   250 px, stacked otherwise. */
+.devs { margin-top: clamp(32px, 4vw, 44px); }
+.devs-title { font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; margin-bottom: 16px; }
+.dev-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+.dev-card {
+  display: grid; align-content: start; gap: 18px; padding: 20px; border-radius: var(--radius-lg);
+  border: 1px solid rgba(57, 199, 232, 0.26);
+  background: radial-gradient(90% 70% at 100% 0%, rgba(47, 211, 181, 0.13), transparent 60%), rgba(10, 23, 40, 0.72);
+}
+.dev-head { display: flex; align-items: center; gap: 14px; }
+.dev-head .avatar { flex: none; width: 48px; height: 48px; background: linear-gradient(135deg, var(--cyan), var(--teal)); }
+.dev-who { display: grid; min-width: 0; margin: 0; line-height: 1.3; }
+.dev-name { font-size: 1.1rem; font-weight: 720; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.dev-role { font-size: 0.9rem; color: var(--ink-3); }
+.dev-links { display: grid; gap: 8px; }
+.dev-link {
+  display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, 0.035); color: var(--ink); text-decoration: none;
+  font-size: 0.95rem; font-weight: 620; transition: border-color 0.2s, background-color 0.2s;
+}
+.dev-link:hover { color: var(--ink); border-color: rgba(47, 211, 181, 0.55); background: rgba(47, 211, 181, 0.08); }
+.dev-link:active { background: rgba(47, 211, 181, 0.16); }
+.dev-link:focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: 12px; }
+.dev-icon { width: 20px; height: 20px; flex: none; fill: currentColor; color: var(--cyan); }
+.dev-ext { width: 16px; height: 16px; flex: none; margin-left: auto; color: var(--ink-3); transition: color 0.2s; }
+.dev-link:hover .dev-ext { color: var(--teal); }
 .resources { padding: clamp(24px, 3vw, 34px); border-radius: var(--radius-lg); border: 1px solid var(--line); background: rgba(255, 255, 255, 0.025); }
 .resources .h3-small { margin-bottom: 12px; }
 .resources-lede { font-size: 0.98rem; color: var(--ink-2); }

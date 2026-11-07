@@ -130,10 +130,13 @@ full 4K views on top of the 1080p ones.
 
 ## Technology marks and the image viewer
 
-- `assets/img/tech-marks.svg` (16 KB): one SVG sprite with the marks of React, TypeScript, OpenJDK (for Java),
+- `assets/img/tech-marks.svg` (18 KB): one SVG sprite with the marks of React, TypeScript, OpenJDK (for Java),
   Spring Boot, PostgreSQL, Docker, GitHub Actions and nginx, from Simple Icons 16.36.0 (CC0 1.0). The trademarks belong
   to their owners; the page uses them only to name the technologies the product is built with, in one colour. Simple
-  Icons has no Playwright mark, so Playwright has a plain custom glyph (a browser window with a tick), not a logo.
+  Icons has no Playwright mark, so Playwright has a plain custom glyph (a browser window with a tick), not a logo. The
+  developer cards use the GitHub mark (Simple Icons) and the LinkedIn mark (from an earlier Simple Icons release, CC0)
+  only to link to the developers' own profiles, plus two plain custom glyphs: a globe (Website) and an arrow (opens in a
+  new tab).
 - `assets/vendor/photoswipe/`: PhotoSwipe 5.4.4 by Dmytro Semenov (MIT, `LICENSE.txt`), the image viewer, copied from
   npm by `npm run vendor`. It is loaded only when a picture is first opened.
 

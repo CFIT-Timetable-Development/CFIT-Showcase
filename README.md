@@ -184,5 +184,6 @@ Built by Zhida Chen and Khylle Mauricio, Wintec Industry Internship 2026. Typefa
 by Rasmus Andersson, under the SIL Open Font License (`assets/fonts/LICENSE-Inter.txt`). Image viewer:
 [PhotoSwipe](https://photoswipe.com/) by Dmytro Semenov, MIT (`assets/vendor/photoswipe/LICENSE.txt`). Technology
 marks: [Simple Icons](https://simpleicons.org/), CC0 1.0; the trademarks belong to their owners and are used only to
-name the technologies the product is built with. The film's music and sound effects were synthesised for the project
-from code.
+name the technologies the product is built with. The GitHub and LinkedIn marks on the developer cards (LinkedIn's
+from an earlier Simple Icons release, CC0) are used only to link to the developers' own profiles. The film's music and
+sound effects were synthesised for the project from code.

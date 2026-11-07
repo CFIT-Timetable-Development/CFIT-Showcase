@@ -405,7 +405,7 @@ async function phoneSizes(page, label) {
       if (size < 11) tiny.push({ t: `${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0]} "${(el.textContent ?? '').trim().slice(0, 24)}"`, s: size });
     }
     /** @type {string[]} */ const small = [];
-    for (const el of document.querySelectorAll('.btn, .nav-toggle, .brand, .chapters button, .eng-nav a, .tech-link, .steps a, .proof a, [data-loop-toggle], .transcript summary, .site-footer a, .player-start')) {
+    for (const el of document.querySelectorAll('.btn, .nav-toggle, .brand, .chapters button, .eng-nav a, .tech-link, .steps a, .proof a, [data-loop-toggle], .transcript summary, .site-footer a, .player-start, .dev-link')) {
       const r = el.getBoundingClientRect();
       if (r.width === 0 || /** @type {HTMLElement} */ (el).offsetParent === null) continue;
       const pad = el.matches('[data-loop-toggle]') ? 12 : 0; // its ::before extends the touch area by 6 px each way
@@ -969,6 +969,102 @@ await noClickThrough(chrome, { viewport: { width: 390, height: 844 }, deviceScal
   await context.close();
 }
 
+// ── 5c. Meet the Developers: who is who, their six links, layout and keyboard ───────────────────────────────
+const DEVELOPERS = [
+  { id: 'zhida-chen', name: 'Zhida Chen', initials: 'ZC', links: [['LinkedIn', 'https://www.linkedin.com/in/zchen25/'], ['GitHub', 'https://github.com/MichaelChen97'], ['Website', 'https://michaelchen97.github.io/']] },
+  { id: 'khylle-mauricio', name: 'Khylle Mauricio', initials: 'KM', links: [['LinkedIn', 'https://www.linkedin.com/in/khylle-mauricio-95654437a/'], ['GitHub', 'https://github.com/KM1004'], ['Website', 'https://km1004.github.io/Online-Portfolio/']] },
+];
+{
+  const { context, page } = await openPage(chrome, { viewport: { width: 1440, height: 900 } });
+  await page.goto(target, { waitUntil: 'load' });
+  const cards = await page.evaluate(() => Array.from(document.querySelectorAll('#about .dev-card')).map((card) => {
+    // What a sighted visitor reads: the card's text without the visually hidden parts.
+    const clone = /** @type {HTMLElement} */ (card.cloneNode(true));
+    for (const hidden of clone.querySelectorAll('.sr-only')) hidden.remove();
+    return {
+      id: card.getAttribute('data-dev'),
+      names: Array.from(card.querySelectorAll('.dev-name')).map((n) => n.textContent?.trim()),
+      role: card.querySelector('.dev-role')?.textContent?.trim(),
+      initials: card.querySelector('.avatar')?.textContent?.trim(),
+      visible: (clone.textContent ?? '').replace(/\s+/g, ' ').trim(),
+      links: Array.from(card.querySelectorAll('a')).map((a) => ({
+        tag: a.tagName, href: a.getAttribute('href'), label: a.querySelector('.dev-label')?.textContent?.trim(),
+        target: a.getAttribute('target'), rel: (a.getAttribute('rel') ?? '').split(/\s+/), name: (a.textContent ?? '').replace(/\s+/g, ' ').trim(),
+        icon: !!a.querySelector('svg.dev-icon use'), ext: !!a.querySelector('svg.dev-ext use'),
+      })),
+    };
+  }));
+  check('developers: two cards, Zhida Chen then Khylle Mauricio, each "Developer", with their initials', cards.length === 2 && cards.every((c, i) => c.id === DEVELOPERS[i].id && c.role === 'Developer' && c.initials === DEVELOPERS[i].initials),
+    JSON.stringify(cards.map((c) => [c.id, c.role, c.initials])));
+  cards.forEach((c, i) => {
+    const dev = DEVELOPERS[i];
+    const other = DEVELOPERS[1 - i];
+    check(`developers: ${dev.name}'s name appears exactly once in their card, and not in the other card`, c.names.length === 1 && c.names[0] === dev.name && !c.visible.includes(other.name), `${JSON.stringify(c.names)} · "${c.visible}"`);
+    const exact = c.links.length === 3 && c.links.every((l, j) => l.tag === 'A' && l.label === dev.links[j][0] && l.href === dev.links[j][1]);
+    check(`developers: ${dev.name}'s card has exactly LinkedIn, GitHub and Website, each to its own address`, exact, c.links.map((l) => `${l.label} → ${l.href}`).join(' · '));
+    check(`developers: ${dev.name}'s links open in a new tab with rel="noopener noreferrer" and an icon and arrow`, c.links.every((l) => l.target === '_blank' && l.rel.includes('noopener') && l.rel.includes('noreferrer') && l.icon && l.ext), JSON.stringify(c.links.map((l) => [l.target, l.rel.join(' ')])));
+    check(`developers: ${dev.name}'s links are named for screen readers ("${dev.name} on LinkedIn…")`, c.links.every((l, j) => l.name.includes(dev.name) && l.name.includes(dev.links[j][0]) && /new tab/.test(l.name)), c.links.map((l) => l.name).join(' | '));
+    const leak = /https?:|www\.|\.com|\.io|zchen25|MichaelChen97|KM1004|khylle-mauricio-9/i.test(c.visible);
+    check(`developers: no address or username is visible in ${dev.name}'s card`, !leak, `"${c.visible}"`);
+  });
+  const allHrefs = cards.flatMap((c) => c.links.map((l) => l.href));
+  check('developers: the six links are all different and none points to the private product repository', new Set(allHrefs).size === 6 && !allHrefs.some((h) => /CFIT-Timetable-Development/i.test(h ?? '')), allHrefs.join(', '));
+  const rest = await page.evaluate(() => ({
+    h2: document.getElementById('about-title')?.textContent?.trim(),
+    devsTitle: document.getElementById('devs-title')?.textContent?.trim(),
+    oldTeam: document.querySelectorAll('#about .team').length,
+    panel: document.querySelector('#about .resources h3')?.textContent?.trim(),
+    items: Array.from(document.querySelectorAll('#about .resource-list li b')).map((b) => b.textContent?.trim()),
+    lede: document.querySelector('#about .resources-lede')?.textContent?.includes('private GitHub repository'),
+  }));
+  check('developers: the section heading, "Meet the Developers" and the Behind the application panel are intact, the old labels gone',
+    rest.h2 === 'A 2026 Wintec industry internship.' && rest.devsTitle === 'Meet the Developers' && rest.oldTeam === 0 && rest.panel === 'Behind the application' && rest.items.length === 4 && !!rest.lede, JSON.stringify(rest));
+
+  // Keyboard: Tab moves through the six links in order, each with a visible focus outline.
+  await page.locator('#about .about-copy > p:not(.kicker)').click({ position: { x: 5, y: 5 } });
+  /** @type {{ href: string | null, outline: string }[]} */ const order = [];
+  for (let i = 0; i < 6; i += 1) {
+    await page.keyboard.press('Tab');
+    order.push(await page.evaluate(() => { const a = document.activeElement; const s = a ? getComputedStyle(a) : null; return { href: a?.getAttribute('href') ?? null, outline: s ? `${s.outlineStyle} ${s.outlineWidth}` : '' }; }));
+  }
+  const expected = DEVELOPERS.flatMap((d) => d.links.map((l) => l[1]));
+  check('developers: Tab reaches the six links in reading order, each with a visible focus outline', order.every((o, i) => o.href === expected[i] && /^solid 3px/.test(o.outline)), order.map((o) => `${o.href?.replace(/^https:\/\//, '')} [${o.outline}]`).join(' · '));
+  await context.close();
+}
+// Layout: side by side and equal on desktop and tablet, stacked on phones; 44 px rows; nothing cut or overflowing.
+/** @type {[string, import('playwright-core').Browser | null, import('playwright-core').BrowserContextOptions, 'side' | 'stacked'][]} */
+const devLayouts = [
+  ['Chrome 1440', chrome, { viewport: { width: 1440, height: 900 } }, 'side'],
+  ['Chrome 1920', chrome, { viewport: { width: 1920, height: 1080 } }, 'side'],
+  ['Chrome tablet 768', chrome, { viewport: { width: 768, height: 1024 }, isMobile: true, hasTouch: true }, 'side'],
+  ['WebKit iPhone 13', safari, { ...devices['iPhone 13'] }, 'stacked'],
+  ['WebKit iPhone SE (3rd gen)', safari, { ...devices['iPhone SE (3rd gen)'] }, 'stacked'],
+  ['WebKit iPhone 15 Pro Max', safari, { ...devices['iPhone 15 Pro Max'] }, 'stacked'],
+];
+for (const [label, browser, options, want] of devLayouts) {
+  if (!browser) continue;
+  const { context, page } = await openPage(browser, options);
+  await page.goto(target, { waitUntil: 'load' });
+  await page.locator('#about .dev-cards').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(400);
+  const m = await page.evaluate(() => {
+    const r = (/** @type {Element} */ e) => e.getBoundingClientRect();
+    const cards = Array.from(document.querySelectorAll('.dev-card')).map(r);
+    const column = r(/** @type {Element} */ (document.querySelector('.dev-cards')));
+    const rows = Array.from(document.querySelectorAll('.dev-link')).map((a) => r(a).height);
+    const cut = Array.from(document.querySelectorAll('.dev-name, .dev-label, .dev-role')).filter((e) => e.scrollWidth > e.clientWidth + 1 || r(e).right > r(/** @type {Element} */ (e.closest('.dev-card'))).right + 0.5).map((e) => e.textContent);
+    const icons = Array.from(document.querySelectorAll('.dev-icon, .dev-ext')).every((s) => r(s).width >= 15 && r(s).right <= r(/** @type {Element} */ (s.closest('.dev-link'))).right);
+    return { vw: window.innerWidth, sw: document.documentElement.scrollWidth, cards: cards.map((c) => ({ x: Math.round(c.left), y: Math.round(c.top), w: Math.round(c.width), h: Math.round(c.height) })), columnW: Math.round(column.width), minRow: Math.min(...rows), cut, icons };
+  });
+  const [a, b] = m.cards;
+  const layoutOk = want === 'side'
+    ? Math.abs(a.y - b.y) < 1 && Math.abs(a.w - b.w) <= 1 && Math.abs(a.h - b.h) <= 1 && b.x > a.x
+    : b.y >= a.y + a.h && Math.abs(a.w - m.columnW) <= 1 && Math.abs(b.w - m.columnW) <= 1;
+  check(`developers (${label}): ${want === 'side' ? 'side by side, equal width and height' : 'stacked, full width'}; rows ≥ 44 px; nothing cut; no overflow`,
+    layoutOk && m.minRow >= 44 && m.cut.length === 0 && m.icons && m.sw <= m.vw, JSON.stringify(m));
+  await context.close();
+}
+
 // ── 6. Without JavaScript, and with reduced motion (Chrome) ──────────────────────────────────────────
 for (const width of [390, 1440]) {
   const { context, page, failed } = await openPage(chrome, { viewport: { width, height: 900 }, javaScriptEnabled: false });
@@ -1024,11 +1120,17 @@ for (const width of [390, 1440]) {
 
   const external = [...refs].filter((r) => /^https?:/.test(r));
   /** @type {string[]} */ const bad = [];
+  /** @type {string[]} */ const refused = [];
   for (const url of external) {
     const res = await fetch(url, { redirect: 'follow' }).catch((e) => ({ ok: false, status: String(e) }));
-    if (!res.ok) bad.push(`${res.status} ${url}`);
+    // LinkedIn answers every automated request with its own status 999 ("request denied"), whether or not the
+    // profile exists; those links cannot be checked this way, so they are listed and their exact URLs are checked
+    // in the developer-card tests instead. Every other link must answer normally.
+    if (!res.ok && res.status === 999 && /(^|\.)linkedin\.com$/.test(new URL(url).hostname)) refused.push(url);
+    else if (!res.ok) bad.push(`${res.status} ${url}`);
   }
-  check(`links: all ${external.length} external links answer`, bad.length === 0, bad.join(', '));
+  check(`links: all ${external.length - refused.length} external links that accept automated requests answer`, bad.length === 0, bad.join(', ') || `${external.length} links, ${refused.length} on LinkedIn`);
+  if (refused.length) note(`LinkedIn refused automated requests (HTTP 999) for ${refused.length} profile link(s); open them once by hand: ${refused.join(', ')}`);
 
   const used = new Set(localRefs.map((r) => path.posix.normalize(r)));
   const unused = [];
