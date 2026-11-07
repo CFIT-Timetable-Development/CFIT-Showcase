@@ -88,6 +88,8 @@ npm run check                      # type check, HTML validation and the full br
 - the film and a chapter;
 - the image viewer with the mouse and keyboard;
 - the viewer on a phone with real touch input: fit, double-tap zoom, one-finger pan, reset, pinch, swipe and close;
+- closing the viewer never activates what is underneath (the menu button sits under Close on phones), with
+  iPhone Safari's late click emulated by `tools/late-click.js`;
 - that phones get the phone crops, with enough pixels for the screen and the interface at a readable size;
 - no text under 11 px and controls of at least 44 px;
 - the page without JavaScript and with reduced motion;

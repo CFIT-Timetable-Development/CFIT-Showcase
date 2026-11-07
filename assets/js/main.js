@@ -462,6 +462,39 @@
       }, { passive: true });
     }
 
+    // Click-through guard. A touch is followed by a compatibility click, which iPhone Safari can deliver after a viewer
+    // closed by that touch has already gone, so it would land on whatever is under the finger. After a touch closes
+    // the viewer, a click that belongs to that same touch is dropped: one that comes before any new touch or press,
+    // within 48 px of it and within 800 ms. Any new pointerdown disarms the guard at once, so the next real tap
+    // (the menu button included) always works; keyboard clicks (detail 0) are never touched.
+    /** @type {{ x: number, y: number, until: number } | null} */
+    let guard = null;
+    const ghostEvents = ['mousedown', 'mouseup', 'click'];
+    /** @param {Event} event */
+    const dropGhost = (event) => {
+      if (!guard || !(event instanceof MouseEvent)) return;
+      const ours = event.detail > 0 && performance.now() <= guard.until && Math.hypot(event.clientX - guard.x, event.clientY - guard.y) <= 48;
+      if (ours) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+      if (event.type === 'click') disarmClickGuard();
+    };
+    const disarmClickGuard = () => {
+      guard = null;
+      for (const type of ghostEvents) window.removeEventListener(type, dropGhost, true);
+      window.removeEventListener('pointerdown', disarmClickGuard, true);
+    };
+    /** @param {number} x @param {number} y */
+    const armClickGuard = (x, y) => {
+      disarmClickGuard();
+      const mine = { x, y, until: performance.now() + 800 };
+      guard = mine;
+      for (const type of ghostEvents) window.addEventListener(type, dropGhost, true);
+      window.addEventListener('pointerdown', disarmClickGuard, true);
+      window.setTimeout(() => { if (guard === mine) disarmClickGuard(); }, 800);
+    };
+
     let busy = false;
     /** @param {number} index @param {HTMLElement} trigger */
     const open = async (index, trigger) => {
@@ -549,21 +582,43 @@
         pswp.on('afterInit', () => {
           const root = pswp.element;
           if (!root) return;
-          // Browsers drop a tap that interrupts the momentum of a swipe, so a quick tap on Close right after a swipe
-          // would produce no click. Close on the touch release itself.
+          // Close on the touch release itself: browsers drop a tap that interrupts the momentum of a swipe, so waiting
+          // for its click could lose a quick tap on Close right after a swipe. That touch's own click is then
+          // cancelled (touchend), so it cannot reach the page once the viewer has gone: on a phone the menu button
+          // sits exactly under Close. A cancelled or interrupted press (pointercancel, finger slid off) closes nothing.
           const closeButton = /** @type {Element | null} */ (root.querySelector('.pswp__button--close'));
-          let pressed = false;
-          closeButton?.addEventListener('pointerdown', (event) => { pressed = event instanceof PointerEvent && event.pointerType !== 'mouse'; });
-          closeButton?.addEventListener('pointerup', (event) => {
-            if (pressed && event instanceof PointerEvent && event.pointerType !== 'mouse') pswp.close();
-            pressed = false;
+          /** @type {number | null} */ let pressId = null;
+          closeButton?.addEventListener('pointerdown', (event) => {
+            pressId = event instanceof PointerEvent && event.pointerType !== 'mouse' ? event.pointerId : null;
           });
+          closeButton?.addEventListener('pointercancel', () => { pressId = null; });
+          closeButton?.addEventListener('pointerup', (event) => {
+            if (!(event instanceof PointerEvent) || pressId === null || event.pointerId !== pressId) return;
+            pressId = null;
+            const r = closeButton.getBoundingClientRect();
+            const inside = event.clientX >= r.left - 8 && event.clientX <= r.right + 8 && event.clientY >= r.top - 8 && event.clientY <= r.bottom + 8;
+            if (!inside) return;
+            armClickGuard(event.clientX, event.clientY);
+            pswp.close();
+          });
+          closeButton?.addEventListener('touchend', (event) => { if (event.cancelable) event.preventDefault(); }, { passive: false });
+          // Any other touch that closes the viewer (a tap outside the picture) gets the same guard.
+          root.addEventListener('pointerup', (/** @type {PointerEvent} */ event) => {
+            if (event.pointerType !== 'mouse') lastTouch = { x: event.clientX, y: event.clientY, t: performance.now() };
+          }, true);
           root.setAttribute('aria-label', 'Picture viewer');
           root.setAttribute('aria-modal', 'true');
           root.setAttribute('aria-describedby', 'cfit-viewer-caption');
           update();
         });
         for (const name of ['change', 'zoomPanUpdate', 'resize', 'imageSizeChange', 'loadComplete', 'openingAnimationEnd']) pswp.on(name, update);
+        /** @type {{ x: number, y: number, t: number } | null} */
+        let lastTouch = null;
+        pswp.on('close', () => {
+          // A tap outside the picture closes the viewer up to 300 ms after the touch (PhotoSwipe waits for a possible
+          // double-tap), so a touch that recent is the one closing it.
+          if (lastTouch && performance.now() - lastTouch.t < 600) armClickGuard(lastTouch.x, lastTouch.y);
+        });
         pswp.on('destroy', () => {
           if (document.activeElement === document.body || document.activeElement === null) trigger.focus({ preventScroll: true });
         });

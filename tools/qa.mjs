@@ -787,6 +787,188 @@ if (safari) {
   note('WebKit runs here as Playwright\'s WebKit build on Windows with iPhone screen sizes and touch, not as Safari on an iPhone. Pinch and pan in WebKit use synthetic touch pointers; in Chrome they are real touch events. Safe-area insets are 0 in automation; the page reserves them with env(safe-area-inset-*).');
 }
 
+// ── 5b. Closing the viewer never clicks what is underneath (the menu button sits under Close on phones) ──────
+// tools/late-click.js emulates iPhone Safari's late compatibility click: the click after a touch arrives 450 ms later
+// and lands on whatever is then under the finger. With always = true it delivers one even when the page cancelled
+// the touch's click, so the click-through guard is tested too. Emulation, not a real iPhone.
+const lateClick = readFileSync(path.join(repo, 'tools/late-click.js'), 'utf8');
+/**
+ * @param {import('playwright-core').Browser} browser @param {import('playwright-core').BrowserContextOptions} options
+ * @param {string} label @param {'cdp' | 'synthetic'} gestures
+ */
+async function noClickThrough(browser, options, label, gestures) {
+  const { context, page, errors } = await openPage(browser, options);
+  await page.addInitScript({ content: lateClick });
+  await page.goto(target, { waitUntil: 'load' });
+  const cdp = gestures === 'cdp' ? await context.newCDPSession(page) : null;
+  /** @param {{x:number,y:number}[][]} paths */
+  const gesture = (paths) => (cdp ? cdpGesture(cdp, page, paths) : syntheticGesture(page, paths));
+  const setLate = (/** @type {number} */ delay, /** @type {boolean} */ always) => page.evaluate(([d, a]) => { const l = /** @type {any} */ (window).__late; l.delay = d; l.always = a; l.landed.length = 0; l.replayed = 0; }, [delay, always]);
+  const state = () => page.evaluate(() => {
+    const l = /** @type {any} */ (window).__late;
+    return {
+      open: !!document.querySelector('.pswp'),
+      expanded: document.querySelector('[data-nav-toggle]')?.getAttribute('aria-expanded'),
+      navOpen: !!document.querySelector('[data-header]')?.classList.contains('nav-open'),
+      landed: /** @type {string[]} */ (l.landed).filter((s) => !s.includes('pswp')), replayed: l.replayed,
+    };
+  });
+  const navClosed = (/** @type {any} */ s) => s.expanded === 'false' && !s.navOpen;
+  /** Opens a picture: the conflict one, or the n-th of the page's main pictures. */
+  const openPicture = async (/** @type {string} */ selector) => {
+    await setLate(0, false);
+    const t = page.locator(selector).first();
+    await t.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    await t.tap();
+    const ok = await page.waitForFunction(() => { const i = /** @type {HTMLImageElement | null} */ (document.querySelector('.pswp--open .pswp__item[aria-hidden="false"] .pswp__img')); return !!i && i.complete; }, null, { timeout: 10000 }).then(() => true, () => false);
+    await page.waitForTimeout(700);
+    return ok;
+  };
+  const tapClose = async () => {
+    const b = await page.locator('.pswp__button--close').boundingBox();
+    if (!b) return;
+    await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2);
+    await page.waitForTimeout(1300);
+  };
+  const conflict = '.cap-wide .cap-media [data-zoom]';
+
+  // 1–4. Tap X with the click arriving late: the viewer closes, the menu stays closed, nothing underneath is hit.
+  await openPicture(conflict);
+  await setLate(450, false);
+  await tapClose();
+  let s = await state();
+  check(`${label}: tapping X closes the viewer and the touch makes no click at all`, !s.open && s.replayed === 0, JSON.stringify(s));
+  check(`${label}: after X the menu stays closed (aria-expanded false, no nav-open) and nothing underneath was activated`, navClosed(s) && s.landed.length === 0, JSON.stringify(s));
+  await openPicture(conflict);
+  await setLate(450, true);
+  await tapClose();
+  s = await state();
+  check(`${label}: even a click the browser sends anyway (late) is dropped: menu closed, nothing activated`, !s.open && s.replayed === 1 && navClosed(s) && s.landed.length === 0, JSON.stringify(s));
+
+  // 5. Straight after closing, a deliberate tap on the menu button works (its click arrives late too), and again.
+  await setLate(450, true);
+  const menu = await page.locator('[data-nav-toggle]').boundingBox();
+  if (menu) await page.touchscreen.tap(menu.x + menu.width / 2, menu.y + menu.height / 2);
+  await page.waitForTimeout(900);
+  const opened = await state();
+  if (menu) await page.touchscreen.tap(menu.x + menu.width / 2, menu.y + menu.height / 2);
+  await page.waitForTimeout(900);
+  const closedAgain = await state();
+  check(`${label}: right after closing the viewer, the menu button still opens and closes the menu`, opened.expanded === 'true' && opened.navOpen && navClosed(closedAgain), `open: ${opened.expanded}, then: ${closedAgain.expanded}`);
+
+  // 6. Another picture, opened and closed again.
+  await openPicture('.cap-split:has(#f-fixes) figure [data-zoom]');
+  await setLate(450, true);
+  await tapClose();
+  s = await state();
+  check(`${label}: a second picture opens and closes the same way`, !s.open && navClosed(s) && s.landed.length === 0, JSON.stringify(s));
+
+  // 7. Swipe between pictures, then tap X at once.
+  await openPicture(conflict);
+  await setLate(450, true);
+  const vw = await page.evaluate(() => ({ w: window.innerWidth, h: window.innerHeight }));
+  await gesture([line({ x: vw.w * 0.8, y: vw.h * 0.5 }, { x: vw.w * 0.15, y: vw.h * 0.5 }, 10)]);
+  await page.waitForTimeout(150);
+  await gesture([line({ x: vw.w * 0.8, y: vw.h * 0.5 }, { x: vw.w * 0.15, y: vw.h * 0.5 }, 10)]);
+  await page.waitForTimeout(80);
+  const counter = await page.evaluate(() => document.querySelector('.pswp__counter')?.textContent);
+  await tapClose();
+  s = await state();
+  check(`${label}: after swiping between pictures, X closes at once without click-through`, !s.open && navClosed(s) && s.landed.length === 0, `${counter} · ${JSON.stringify(s)}`);
+
+  // 8. Double-tap zoom and pinch, then X.
+  await openPicture(conflict);
+  await setLate(0, false);
+  const img = await page.locator('.pswp__item[aria-hidden="false"] .pswp__img').boundingBox();
+  if (img) {
+    await page.touchscreen.tap(img.x + img.width * 0.4, img.y + img.height * 0.5);
+    await page.waitForTimeout(90);
+    await page.touchscreen.tap(img.x + img.width * 0.4, img.y + img.height * 0.5);
+    await page.waitForTimeout(700);
+  }
+  const zoomed = await page.evaluate(() => !!document.querySelector('.pswp.is-zoomed'));
+  await gesture([line({ x: vw.w / 2 - 30, y: vw.h / 2 }, { x: vw.w / 2 - 120, y: vw.h / 2 }, 12), line({ x: vw.w / 2 + 30, y: vw.h / 2 }, { x: vw.w / 2 + 120, y: vw.h / 2 }, 12)]);
+  await page.waitForTimeout(500);
+  await setLate(450, true);
+  await tapClose();
+  s = await state();
+  check(`${label}: after double-tap zoom and a pinch, X closes without click-through`, zoomed && !s.open && navClosed(s) && s.landed.length === 0, `zoomed ${zoomed} · ${JSON.stringify(s)}`);
+
+  // 9. A tap on the backdrop (outside the picture) closes it, and its late click hits nothing underneath.
+  await openPicture(conflict);
+  await setLate(450, true);
+  const pic = await page.locator('.pswp__item[aria-hidden="false"] .pswp__img').boundingBox();
+  const bx = vw.w / 2;
+  const by = pic ? Math.max(70, pic.y - 40) : 90;
+  await page.touchscreen.tap(bx, by);
+  await page.waitForTimeout(1400);
+  s = await state();
+  check(`${label}: a tap on the backdrop closes it, and nothing under that tap is activated`, !s.open && navClosed(s) && s.landed.length === 0, `tap at (${Math.round(bx)},${Math.round(by)}) · ${JSON.stringify(s)}`);
+
+  // 10. An interrupted press on X (pointercancel, or the finger slid off) closes nothing.
+  await openPicture(conflict);
+  const interrupted = await page.evaluate(async () => {
+    const b = /** @type {HTMLElement} */ (document.querySelector('.pswp__button--close'));
+    const r = b.getBoundingClientRect();
+    const at = (/** @type {string} */ type, /** @type {number} */ x, /** @type {number} */ y) => b.dispatchEvent(new PointerEvent(type, { pointerId: 41, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y, bubbles: true, cancelable: true }));
+    at('pointerdown', r.left + r.width / 2, r.top + r.height / 2);
+    at('pointercancel', r.left + r.width / 2, r.top + r.height / 2);
+    await new Promise((res) => setTimeout(res, 500));
+    const afterCancel = !!document.querySelector('.pswp--open');
+    at('pointerdown', r.left + r.width / 2, r.top + r.height / 2);
+    at('pointerup', r.left - 80, r.top + 200);
+    await new Promise((res) => setTimeout(res, 500));
+    return { afterCancel, afterSlideOff: !!document.querySelector('.pswp--open') };
+  });
+  check(`${label}: a cancelled press or a finger slid off X does not close the viewer`, interrupted.afterCancel && interrupted.afterSlideOff, JSON.stringify(interrupted));
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(600);
+  check(`${label}: no console errors in the close tests`, errors.length === 0, errors.join(' | '));
+  await context.close();
+}
+if (safari) {
+  await noClickThrough(safari, { ...devices['iPhone 13'] }, 'WebKit iPhone 13 close', 'synthetic');
+  await noClickThrough(safari, { ...devices['iPhone 13'], reducedMotion: 'reduce' }, 'WebKit iPhone 13 (reduced motion) close', 'synthetic');
+  await noClickThrough(safari, { ...devices['iPhone SE (3rd gen)'] }, 'WebKit iPhone SE close', 'synthetic');
+}
+await noClickThrough(chrome, { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true }, 'Chrome 390 touch close', 'cdp');
+
+// Desktop: the mouse and Escape close the viewer without activating anything underneath; focus returns.
+{
+  const { context, page } = await openPage(chrome, { viewport: { width: 1440, height: 900 } });
+  await page.addInitScript({ content: lateClick });
+  await page.goto(target, { waitUntil: 'load' });
+  const t = page.locator('.cap-wide .cap-media [data-zoom]').first();
+  await t.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(500);
+  await t.click();
+  await page.waitForFunction(() => !!document.querySelector('.pswp--open .pswp__img'), null, { timeout: 10000 });
+  await page.waitForTimeout(700);
+  await page.evaluate(() => { /** @type {any} */ (window).__late.landed.length = 0; });
+  await page.click('.pswp__button--close');
+  await page.waitForTimeout(800);
+  const m = await page.evaluate(() => ({ open: !!document.querySelector('.pswp'), landed: /** @type {any} */ (window).__late.landed.filter((/** @type {string} */ x) => !x.includes('pswp')), focus: !!document.activeElement?.closest('.cap-wide') }));
+  check('desktop close: a mouse click on X closes the viewer, activates nothing underneath, focus back on the picture', !m.open && m.landed.length === 0 && m.focus, JSON.stringify(m));
+  await t.click();
+  await page.waitForFunction(() => !!document.querySelector('.pswp--open .pswp__img'), null, { timeout: 10000 });
+  await page.waitForTimeout(600);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(800);
+  const k = await page.evaluate(() => ({ open: !!document.querySelector('.pswp'), focus: !!document.activeElement?.closest('.cap-wide') }));
+  check('desktop close: Escape closes the viewer and focus returns to the picture', !k.open && k.focus, JSON.stringify(k));
+  await t.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => !!document.querySelector('.pswp--open .pswp__img'), null, { timeout: 10000 });
+  await page.waitForTimeout(600);
+  await page.locator('.pswp__button--close').focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(800);
+  const e = await page.evaluate(() => !!document.querySelector('.pswp'));
+  check('desktop close: Enter on the focused X closes the viewer (keyboard clicks are never dropped)', !e);
+  await context.close();
+}
+
 // ── 6. Without JavaScript, and with reduced motion (Chrome) ──────────────────────────────────────────
 for (const width of [390, 1440]) {
   const { context, page, failed } = await openPage(chrome, { viewport: { width, height: 900 }, javaScriptEnabled: false });
