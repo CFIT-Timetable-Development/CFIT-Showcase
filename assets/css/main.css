@@ -466,6 +466,9 @@ figcaption b { color: var(--ink); }
 .thumbs-one li { grid-template-columns: minmax(0, 46%) minmax(0, 1fr); align-items: center; gap: 16px; }
 
 .loop .window-body video { width: 100%; background: #0c1b2f; }
+/* Without JavaScript the loop cannot play, so its first frame shows as a picture instead. */
+html:not(.js) .loop video { display: none; }
+.loop-still { width: 100%; }
 /* Sits in the window's title bar (34 px tall, just above the video) so it never covers the recording. */
 .loop-toggle {
   position: absolute; right: 4px; top: -34px; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px 0 10px;

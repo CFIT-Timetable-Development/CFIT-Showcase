@@ -429,6 +429,8 @@ for (const vp of VIEWPORTS) {
   await page.waitForTimeout(1200);
   const initialBytes = requests.reduce((s, r) => s + r.bytes, 0);
   const filmEarly = requests.some((r) => r.url.includes('cfit-product-film'));
+  // The loop and its poster belong far down the page: nothing of it loads at first view.
+  const loopEarly = requests.filter((r) => r.url.includes('drag-loop')).map((r) => r.url.split('/').pop());
   await page.screenshot({ path: path.join(screens, `${vp.name}-first-view.jpg`), type: 'jpeg', quality: 82 });
   await scrollThrough(page);
   const ov = await horizontalOverflow(page);
@@ -436,8 +438,9 @@ for (const vp of VIEWPORTS) {
     ov.offenders.length ? ov.offenders.join('; ') : `scrollWidth ${ov.scrollWidth} = viewport ${ov.width}`);
   const broken = await brokenImages(page);
   check(`${vp.name}: every visible picture loaded`, broken.length === 0, broken.join(', '));
-  check(`${vp.name}: the film and the viewer's full-size files are not downloaded early`,
-    !filmEarly && !requests.some((r) => r.url.includes('cfit-product-film') || /-(3840|3700|3440|2794|2800|2480)\.webp/.test(r.url) || r.url.includes('photoswipe.esm')));
+  check(`${vp.name}: the film, the loop and the viewer's full-size files are not downloaded early`,
+    !filmEarly && loopEarly.length === 0 && !requests.some((r) => r.url.includes('cfit-product-film') || /-(3840|3700|3440|2794|2800|2480)\.webp/.test(r.url) || r.url.includes('photoswipe.esm')),
+    loopEarly.length ? `at first view: ${loopEarly.join(', ')}` : 'film and viewer files only on demand; loop only near view');
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
   const shots = await sequence(page, vp.name);
   check(`${vp.name}: no console errors`, errors.length === 0, errors.join(' | '));
@@ -697,7 +700,7 @@ for (const width of [390, 1440]) {
   const html = readFileSync(path.join(repo, 'index.html'), 'utf8');
   const css = readFileSync(path.join(repo, 'assets/css/main.css'), 'utf8');
   /** @type {Set<string>} */ const refs = new Set();
-  for (const m of html.matchAll(/\b(?:src|href|poster|data-poster-phone)="([^"#][^"]*)"/g)) refs.add(m[1].split('#')[0]);
+  for (const m of html.matchAll(/\b(?:src|href|poster|data-poster|data-poster-phone)="([^"#][^"]*)"/g)) refs.add(m[1].split('#')[0]);
   for (const m of html.matchAll(/\b(?:srcset|data-srcset)="([^"]+)"/g)) for (const part of m[1].split(',')) refs.add(part.trim().split(/\s+/)[0]);
   for (const m of css.matchAll(/url\("?(?!data:)([^")]+)"?\)/g)) refs.add(path.posix.join('assets/css', m[1]));
   // Loaded by the script when a picture is first opened.

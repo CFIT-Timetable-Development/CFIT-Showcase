@@ -174,18 +174,28 @@
   }
 
   // ── The drag-and-drop loop: plays silently while in view, with a pause button ───────────────────
-  // On phones it plays a tighter crop of the same recording (the <source media> picks it); its poster is set here.
+  // On phones it plays a tighter crop of the same recording (the <source media> picks it). Browsers fetch a video's
+  // poster at once, wherever it is on the page, so the poster for this screen size is set only as the loop nears view.
   function initLoops() {
     for (const root of all('[data-loop]')) {
       const video = root.querySelector('[data-loop-video]');
       const button = one('[data-loop-toggle]', root);
       const label = one('[data-loop-label]', root);
       if (!(video instanceof HTMLVideoElement) || !button) continue;
-      const phonePoster = video.dataset.posterPhone;
-      if (phone.matches && phonePoster) {
-        video.poster = phonePoster;
+      const onPhone = phone.matches && Boolean(video.dataset.posterPhone);
+      if (onPhone) {
         video.width = 712;
         video.height = 1060;
+      }
+      const poster = (onPhone ? video.dataset.posterPhone : video.dataset.poster) ?? '';
+      const setPoster = () => { if (poster && !video.getAttribute('poster')) video.poster = poster; };
+      if ('IntersectionObserver' in window) {
+        const near = new IntersectionObserver((entries) => {
+          if (entries.some((e) => e.isIntersecting)) { setPoster(); near.disconnect(); }
+        }, { rootMargin: '1200px 0px' });
+        near.observe(video);
+      } else {
+        setPoster();
       }
       button.hidden = false;
       // With reduced motion the loop never starts by itself.
