@@ -150,10 +150,16 @@ b, strong { color: var(--ink); font-weight: 680; }
 
 /* Zoomable screenshots: a link to the full-resolution picture; with JavaScript it opens the image viewer. */
 .shot {
-  position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px;
+  position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 12px;
   background: #0c1b2f; overflow: hidden; cursor: zoom-in; color: inherit;
   box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
-  transition: border-color 0.25s, transform 0.4s var(--ease), box-shadow 0.4s;
+  transition: transform 0.4s var(--ease), box-shadow 0.4s;
+}
+/* The frame is drawn over the picture, not around it, so the picture fills its box exactly and the browser can draw
+   the file chosen from srcset pixel for pixel instead of resampling it to a box 2 px narrower. */
+.shot::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; border: 1px solid var(--line); border-radius: inherit; pointer-events: none;
+  transition: border-color 0.25s;
 }
 .shot picture { display: block; }
 .shot img { width: 100%; }
@@ -162,14 +168,15 @@ b, strong { color: var(--ink); font-weight: 680; }
   background: rgba(6, 15, 29, 0.82) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23eef5fc' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='M15 15l5 5M10.5 8v5M8 10.5h5'/%3E%3C/svg%3E") center / 20px no-repeat;
   border: 1px solid rgba(255, 255, 255, 0.18); opacity: 0; transform: scale(0.9); transition: opacity 0.2s, transform 0.2s;
 }
-.shot:hover, .shot:focus-visible { border-color: rgba(47, 211, 181, 0.55); }
+.shot:hover::before, .shot:focus-visible::before { border-color: rgba(47, 211, 181, 0.55); }
 .shot:hover::after, .shot:focus-visible::after { opacity: 1; transform: none; }
 /* On touch screens there is no hover, so the magnifier is always shown. */
 @media (hover: none) {
   .shot::after { opacity: 1; transform: none; width: 34px; height: 34px; right: 10px; top: 10px; background-size: 18px; }
 }
 .shot:focus-visible { outline-offset: 4px; }
-.shot-bare { border: 0; border-radius: 0; box-shadow: none; }
+.shot-bare { border-radius: 0; box-shadow: none; }
+.shot-bare::before, .shot-paper::before { display: none; }
 .shot-thumb { border-radius: 10px; box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8); }
 .shot-thumb img { aspect-ratio: 16 / 9; object-fit: cover; object-position: 0 0; }
 .shot-thumb::after { width: 30px; height: 30px; right: 8px; top: 8px; background-size: 16px; }
@@ -293,8 +300,9 @@ figcaption b { color: var(--ink); }
 .tech-link svg { width: 18px; height: 18px; transition: transform 0.2s var(--ease); }
 .tech-link:hover svg { transform: translateX(3px); }
 
-.hero-stage { margin-top: clamp(52px, 7vw, 88px); padding-inline: var(--gutter); perspective: 2000px; }
-.hero-shot { width: min(100%, 1280px); margin-inline: auto; transform-origin: 50% 0; }
+.hero-stage { margin-top: clamp(52px, 7vw, 88px); padding-inline: var(--gutter); }
+/* 1282 px = a 1280 px picture inside the 1 px window frame, so the hero file is drawn pixel for pixel. */
+.hero-shot { width: min(100%, 1282px); margin-inline: auto; }
 .hero-shot .note { text-align: center; margin-top: 20px; }
 
 /* Two highlights on the hero picture. The outline frames real UI without covering it; each label sits in an empty
@@ -353,7 +361,20 @@ figcaption b { color: var(--ink); }
 @media (max-width: 639px) {
   .player-start-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
-.player-desc { margin: 18px auto 0; max-width: 760px; text-align: center; font-size: 0.92rem; color: var(--ink-3); }
+/* Film quality: a small segmented control under the player. */
+.player-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 16px; }
+.player-bar[hidden] { display: none; }
+.quality { display: inline-flex; align-items: center; gap: 4px; margin: 0; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255, 255, 255, 0.03); }
+.quality legend { float: left; padding: 0 8px 0 10px; font-size: 0.74rem; font-weight: 720; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.quality label { position: relative; display: inline-flex; cursor: pointer; }
+.quality input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.quality span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 0.86rem; font-weight: 650; color: var(--ink-2); transition: background-color 0.2s, color 0.2s; }
+.quality label:hover span { color: var(--ink); background: rgba(255, 255, 255, 0.06); }
+.quality input:checked + span { color: #04221f; background: var(--teal); }
+.quality input:focus-visible + span { outline: 3px solid #fff; outline-offset: 2px; }
+.quality input:disabled + span { opacity: 0.45; cursor: not-allowed; }
+.quality-status { margin: 0; font-size: 0.86rem; color: var(--ink-3); }
+@media (pointer: coarse) { .quality span { min-height: 44px; } }.player-desc { margin: 18px auto 0; max-width: 760px; text-align: center; font-size: 0.92rem; color: var(--ink-3); }
 
 .chapters { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; margin-top: 36px; }
 .chapters button {
@@ -869,7 +890,7 @@ html:not(.js) .loop video { display: none; }
   .eng-part { margin-top: 64px; padding-top: 40px; }
 
   /* Each feature reads title → picture → problem, action, result. */
-  .cap, .cap-split, .cap-reverse { display: flex; flex-direction: column; gap: 0; }
+  .cap, .cap-split, .cap-reverse { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
   .cap-copy, .cap-wide .cap-copy, .cap-title { display: contents; }
   .cap .feature-tag { order: 1; }
   .cap h3 { order: 1; }
@@ -909,7 +930,6 @@ html:not(.js) .loop video { display: none; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes hl-in { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
-@keyframes tilt-flat { from { transform: rotateX(14deg) scale(0.94); } to { transform: none; } }
 @keyframes dash { to { background-position: 14px 0; } }
 @keyframes dash-v { to { background-position: 0 14px; } }
 @keyframes fill { from { transform: scaleX(0); } to { transform: none; } }
@@ -923,10 +943,6 @@ html:not(.js) .loop video { display: none; }
   .js .hero-stage { animation: rise 1.1s 0.25s var(--ease) both; }
   .js .hl { animation: hl-in 0.6s 1.2s var(--ease) both; }
   .js .hl + .hl { animation-delay: 1.45s; }
-
-  @supports (animation-timeline: scroll()) {
-    .hero-shot { animation: tilt-flat linear both; animation-timeline: scroll(root); animation-range: 0 520px; }
-  }
 
   .js [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
   .js [data-reveal].is-visible { opacity: 1; transform: none; }

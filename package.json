@@ -11,7 +11,8 @@
     "qa": "node tools/qa.mjs",
     "check": "npm run typecheck && npm run lint:html && npm run qa",
     "media": "node tools/build-media.mjs",
-    "vendor": "node tools/vendor.mjs"
+    "vendor": "node tools/vendor.mjs",
+    "srcset": "node tools/sync-srcset.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -22,6 +23,7 @@
     "html-validate": "^11.18.0",
     "photoswipe": "5.4.4",
     "playwright-core": "^1.65.0",
+    "sharp": "^0.35.5",
     "typescript": "^7.0.2"
   }
 }

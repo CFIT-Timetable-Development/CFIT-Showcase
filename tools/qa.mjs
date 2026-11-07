@@ -479,6 +479,59 @@ for (const vp of VIEWPORTS) {
   await page.waitForTimeout(600);
   const current = await page.evaluate(() => document.querySelector('[data-chapters] button[aria-current="true"]')?.textContent?.trim() ?? '');
   check('film: a chapter button seeks and is marked current', sought && current.includes('A coordinated fix'), current);
+
+  // Film quality. On this 1440×900 screen at 1× Auto plays 1080p; 4K UHD switches in place, keeps the position, and
+  // decodes at 3840×2160 and 60 frames per second; chapters still seek; back to 1080p keeps the position too.
+  const filmState = () => page.evaluate(async () => {
+    const el = /** @type {HTMLVideoElement} */ (document.getElementById('film-video'));
+    // Frame rate from the frames the browser actually presents: the shortest gap between their media times.
+    /** @type {number[]} */ const times = [];
+    if ('requestVideoFrameCallback' in el && !el.paused) {
+      await new Promise((resolve) => {
+        const end = performance.now() + 1500;
+        const step = (/** @type {number} */ _now, /** @type {any} */ meta) => { times.push(meta.mediaTime); if (performance.now() < end) el.requestVideoFrameCallback(step); else resolve(undefined); };
+        el.requestVideoFrameCallback(step);
+      });
+    }
+    const gaps = times.slice(1).map((t, i) => t - times[i]).filter((d) => d > 0.001);
+    return {
+      src: el.currentSrc.split('/').pop() ?? '', w: el.videoWidth, h: el.videoHeight, t: el.currentTime, paused: el.paused,
+      fps: gaps.length ? Math.round(1 / Math.min(...gaps)) : 0, presented: times.length,
+      status: document.querySelector('[data-quality-status]')?.textContent ?? '',
+    };
+  });
+  const auto = await filmState();
+  check('film quality: Auto plays 1080p on a 1440×900 screen at 1×', auto.src === 'cfit-product-film-1080p60.mp4' && /Auto: 1080p/.test(auto.status), `${auto.src} · "${auto.status}"`);
+  const beforeSwitch = auto.t;
+  await page.click('.quality label:has(input[value="uhd"])');
+  const uhdPlaying = await page.waitForFunction(() => {
+    const el = /** @type {HTMLVideoElement} */ (document.getElementById('film-video'));
+    return el.videoWidth === 3840 && !el.paused && el.readyState >= 3;
+  }, null, { timeout: 60000 }).then(() => true, () => false);
+  await page.waitForTimeout(800);
+  const uhdState = await filmState();
+  check('film quality: 4K UHD plays a 3840×2160 file (AV1 in Chrome)', uhdPlaying && uhdState.w === 3840 && uhdState.h === 2160 && /2160p60-(av1|hevc)\.mp4$/.test(uhdState.src), `${uhdState.src} ${uhdState.w}×${uhdState.h} · "${uhdState.status}"`);
+  check('film quality: switching keeps the position', Math.abs(uhdState.t - beforeSwitch) < 4, `${beforeSwitch.toFixed(1)} s → ${uhdState.t.toFixed(1)} s`);
+  check('film quality: 4K plays at 60 frames per second', uhdState.fps >= 58 && uhdState.fps <= 62, `${uhdState.fps} fps from ${uhdState.presented} presented frames`);
+  await page.click('[data-chapters] button[data-time="80.5"]');
+  const uhdSeek = await page.waitForFunction(() => {
+    const el = /** @type {HTMLVideoElement} */ (document.getElementById('film-video'));
+    return Math.abs(el.currentTime - 80.5) < 2.5 && el.videoWidth === 3840;
+  }, null, { timeout: 20000 }).then(() => true, () => false);
+  check('film quality: chapters seek in 4K', uhdSeek);
+  const atSwitchBack = (await filmState()).t;
+  await page.click('.quality label:has(input[value="hd"])');
+  const hdBack = await page.waitForFunction(() => {
+    const el = /** @type {HTMLVideoElement} */ (document.getElementById('film-video'));
+    return el.videoWidth === 1920 && !el.paused;
+  }, null, { timeout: 30000 }).then(() => true, () => false);
+  const hdState = await filmState();
+  check('film quality: back to 1080p, at the same position', hdBack && Math.abs(hdState.t - atSwitchBack) < 4, `${atSwitchBack.toFixed(1)} s → ${hdState.t.toFixed(1)} s`);
+  const radios = await page.evaluate(() => ({
+    legend: document.querySelector('.quality legend')?.textContent, count: document.querySelectorAll('.quality input[type="radio"]').length,
+    labelled: Array.from(document.querySelectorAll('.quality label')).every((l) => (l.textContent ?? '').trim().length > 2),
+  }));
+  check('film quality: a labelled group of three radio buttons', radios.legend === 'Quality' && radios.count === 3 && radios.labelled, JSON.stringify(radios));
   await page.evaluate(() => /** @type {HTMLVideoElement} */ (document.getElementById('film-video')).pause());
 
   // The image viewer with a mouse and the keyboard.
@@ -564,6 +617,65 @@ for (const vp of VIEWPORTS) {
   await context.close();
 }
 
+// ── 2b. Auto on a large screen: 4K is chosen, and nothing downloads before play ───────────────────────
+{
+  const { context, page, requests } = await openPage(chrome, { viewport: { width: 2560, height: 1440 } });
+  await page.goto(target, { waitUntil: 'load' });
+  await page.waitForFunction(() => (document.querySelector('[data-quality-status]')?.textContent ?? '').length > 0, null, { timeout: 8000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  const s = await page.evaluate(() => ({
+    status: document.querySelector('[data-quality-status]')?.textContent ?? '',
+    src: document.getElementById('film-video')?.getAttribute('src') ?? '',
+  }));
+  const fetched = requests.filter((r) => r.url.includes('cfit-product-film')).map((r) => r.url.split('/').pop());
+  check('film quality: Auto chooses 4K on a 2560×1440 screen and downloads nothing before play',
+    /Auto: 4K UHD/.test(s.status) && /2160p60-(av1|hevc)\.mp4$/.test(s.src) && fetched.length === 0, `"${s.status}" · ${s.src.split('/').pop()} · fetched: ${fetched.join(', ') || 'nothing'}`);
+  // On a connection that cannot carry 4K (1.2 Mbit/s here), Auto falls back to 1080p and keeps playing.
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Network.enable');
+  await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 60, downloadThroughput: 150000, uploadThroughput: 150000 });
+  await page.locator('[data-player-start]').scrollIntoViewIfNeeded();
+  await page.click('[data-player-start]');
+  const fell = await page.waitForFunction(() => {
+    const el = /** @type {HTMLVideoElement} */ (document.getElementById('film-video'));
+    return /switched from 4K/.test(document.querySelector('[data-quality-status]')?.textContent ?? '') && el.currentSrc.endsWith('1080p60.mp4');
+  }, null, { timeout: 30000 }).then(() => true, () => false);
+  const after = await page.evaluate(() => ({ status: document.querySelector('[data-quality-status]')?.textContent ?? '', src: /** @type {HTMLVideoElement} */ (document.getElementById('film-video')).currentSrc.split('/').pop() }));
+  check('film quality: on a slow connection Auto falls back from 4K to 1080p by itself', fell, `"${after.status}" · ${after.src}`);
+  await context.close();
+}
+
+// ── 2c. Sharpness on desktop screens: every main screenshot gets the pixels the screen needs ────────────
+// Density = file pixels ÷ (CSS width × device pixel ratio). Below 0.98 the browser would enlarge it (soft); above 1.6
+// it would shrink a much larger file (wasted bytes and a second resampling). Nothing may scale or tilt the hero.
+for (const [width, height, dpr] of [[1440, 900, 1], [1440, 900, 2], [1920, 1080, 1.5], [2560, 1440, 1]]) {
+  const { context, page } = await openPage(chrome, { viewport: { width, height }, deviceScaleFactor: dpr });
+  await page.goto(target, { waitUntil: 'load' });
+  await scrollThrough(page);
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForTimeout(500);
+  const res = await page.evaluate(() => {
+    const list = Array.from(document.querySelectorAll('main [data-zoom]:not(.shot-thumb) img')).map((i) => {
+      const img = /** @type {HTMLImageElement} */ (i);
+      const file = Number(/-(\d+)\.webp$/.exec(img.currentSrc)?.[1] ?? 0);
+      const w = img.getBoundingClientRect().width;
+      return { src: img.currentSrc.split('/').pop() ?? '', density: file / (w * window.devicePixelRatio) };
+    });
+    /** @type {string[]} */ const tf = [];
+    for (let el = document.querySelector('.hero-shot img'); el && el !== document.body; el = el.parentElement) {
+      const t = getComputedStyle(el).transform;
+      if (t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)') tf.push(`${el.className}: ${t}`);
+    }
+    return { list, tf };
+  });
+  const off = res.list.filter((x) => x.density < 0.98 || x.density > 1.6).map((x) => `${x.src} ${x.density.toFixed(2)}`);
+  const range = res.list.map((x) => x.density);
+  check(`sharpness ${width}×${height} @${dpr}: every main screenshot drawn at 0.98–1.6 file pixels per screen pixel, hero untransformed`,
+    off.length === 0 && res.tf.length === 0 && res.list.length >= 9,
+    off.join(', ') || res.tf.join('; ') || `${res.list.length} pictures, ${Math.min(...range).toFixed(2)}–${Math.max(...range).toFixed(2)}`);
+  await context.close();
+}
+
 // ── 3. Phone with real touch input (Chrome, 390 × 844 at 3×) ────────────────────────────────────────
 {
   const { context, page, errors } = await openPage(chrome, { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
@@ -571,6 +683,8 @@ for (const vp of VIEWPORTS) {
   await scrollThrough(page);
   await phonePictures(page, 'Chrome 390 @3×');
   await phoneSizes(page, 'Chrome 390');
+  const phoneFilm = await page.evaluate(() => document.querySelector('[data-quality-status]')?.textContent ?? '');
+  check('film quality (phone): Auto stays at 1080p', /Auto: 1080p/.test(phoneFilm), phoneFilm);
   const cdp = await context.newCDPSession(page);
   await touchViewer(page, 'Chrome-390-touch', (paths) => cdpGesture(cdp, page, paths));
   // The phone cut of the loop.
@@ -644,6 +758,15 @@ if (safari) {
       return !!el && !el.paused && el.currentTime > 1;
     }, null, { timeout: 30000 }).then(() => true, () => false);
     check(`${label}: Watch Product Film plays the film`, plays);
+    const wk = await page.evaluate(() => ({
+      status: document.querySelector('[data-quality-status]')?.textContent ?? '',
+      src: /** @type {HTMLVideoElement} */ (document.getElementById('film-video')).currentSrc.split('/').pop(),
+      uhdDisabled: /** @type {HTMLInputElement | null} */ (document.querySelector('.quality input[value="uhd"]'))?.disabled ?? null,
+      av1: document.createElement('video').canPlayType('video/mp4; codecs="av01.0.13M.10"'),
+      hevc: document.createElement('video').canPlayType('video/mp4; codecs="hvc1.2.4.L153.B0"'),
+    }));
+    check(`${label}: the quality control says what plays here (phone: 1080p)`, /Auto: 1080p/.test(wk.status) && wk.src === 'cfit-product-film-1080p60.mp4', `"${wk.status}" · ${wk.src}`);
+    note(`${label}: canPlayType AV1 "${wk.av1}", HEVC "${wk.hevc}"; 4K option ${wk.uhdDisabled ? 'disabled' : 'available'} in this WebKit build.`);
     await page.evaluate(() => /** @type {HTMLVideoElement} */ (document.getElementById('film-video')).pause());
     check(`${label}: no console errors`, errors.length === 0, errors.join(' | '));
     check(`${label}: no failed requests`, failed.length === 0, failed.join(' | '));
@@ -700,7 +823,7 @@ for (const width of [390, 1440]) {
   const html = readFileSync(path.join(repo, 'index.html'), 'utf8');
   const css = readFileSync(path.join(repo, 'assets/css/main.css'), 'utf8');
   /** @type {Set<string>} */ const refs = new Set();
-  for (const m of html.matchAll(/\b(?:src|href|poster|data-poster|data-poster-phone)="([^"#][^"]*)"/g)) refs.add(m[1].split('#')[0]);
+  for (const m of html.matchAll(/\b(?:src|href|poster|data-poster|data-poster-phone|data-hd|data-uhd-av1|data-uhd-hevc)="([^"#][^"]*)"/g)) refs.add(m[1].split('#')[0]);
   for (const m of html.matchAll(/\b(?:srcset|data-srcset)="([^"]+)"/g)) for (const part of m[1].split(',')) refs.add(part.trim().split(/\s+/)[0]);
   for (const m of css.matchAll(/url\("?(?!data:)([^")]+)"?\)/g)) refs.add(path.posix.join('assets/css', m[1]));
   // Loaded by the script when a picture is first opened.

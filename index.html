@@ -102,9 +102,9 @@
           <div class="window">
             <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>CFIT Timetable · 2026 S2 · Day view</span></div>
             <div class="window-body">
-              <a class="shot shot-bare" href="assets/img/hero-day-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/hero-day-1600.webp 1600w, assets/img/hero-day-2400.webp 2400w, assets/img/hero-day-3840.webp 3840w" data-caption="The Day view right after a term is imported: one column per Stage, one card per session, 0 findings. Fictional demonstration data.">
+              <a class="shot shot-bare" href="assets/img/hero-day-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1280.webp 1280w, assets/img/hero-day-1920.webp 1920w, assets/img/hero-day-2560.webp 2560w, assets/img/hero-day-3840.webp 3840w" data-caption="The Day view right after a term is imported: one column per Stage, one card per session, 0 findings. Fictional demonstration data.">
                 <span class="sr-only">Enlarge picture: </span>
-                <img src="assets/img/hero-day-1600.webp" srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1600.webp 1600w, assets/img/hero-day-2400.webp 2400w" sizes="(min-width: 1400px) 1280px, 94vw" width="2400" height="1350" alt="The CFIT Timetable Day view for term 2026 S2, Version 1: one column per Stage from S1 to L8 and colour-coded session cards from 08:00 to 18:00. The status row reads 0 findings, current and clean." fetchpriority="high" decoding="async">
+                <img src="assets/img/hero-day-1280.webp" srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1280.webp 1280w, assets/img/hero-day-1920.webp 1920w, assets/img/hero-day-2560.webp 2560w, assets/img/hero-day-3840.webp 3840w" sizes="(min-width: 1370px) 1280px, (min-width: 880px) calc(100vw - 90px), (min-width: 400px) calc(90vw - 2px), calc(100vw - 42px)" width="3840" height="2160" alt="The CFIT Timetable Day view for term 2026 S2, Version 1: one column per Stage from S1 to L8 and colour-coded session cards from 08:00 to 18:00. The status row reads 0 findings, current and clean." fetchpriority="high" decoding="async">
               </a>
               <span class="hl" style="--x:25.8%;--y:5.9%;--w:13.4%;--h:3.7%" aria-hidden="true"><span class="hl-label hl-above">Validated: 0 findings</span></span>
               <span class="hl" style="--x:30.4%;--y:29.7%;--w:11.3%;--h:20%" aria-hidden="true"><span class="hl-label hl-below">One card per session</span></span>
@@ -133,7 +133,10 @@
 
         <div class="player" data-player data-reveal>
           <div class="player-frame">
-            <video id="film-video" controls preload="none" playsinline poster="assets/img/film-poster-1920.webp" width="1920" height="1080" aria-describedby="film-desc">
+            <video id="film-video" controls preload="none" playsinline poster="assets/img/film-poster-1920.webp" width="1920" height="1080" aria-describedby="film-desc"
+              data-hd="assets/video/cfit-product-film-1080p60.mp4"
+              data-uhd-av1="assets/video/cfit-product-film-2160p60-av1.mp4" data-uhd-av1-type='video/mp4; codecs="av01.0.13M.10"'
+              data-uhd-hevc="assets/video/cfit-product-film-2160p60-hevc.mp4" data-uhd-hevc-type='video/mp4; codecs="hvc1.2.4.L153.B0"'>
               <source src="assets/video/cfit-product-film-1080p60.mp4" type="video/mp4">
               <track kind="chapters" src="assets/video/chapters.vtt" srclang="en" label="Chapters" default>
               <a href="assets/video/cfit-product-film-1080p60.mp4">Download the product film (MP4, 1080p)</a>
@@ -144,6 +147,15 @@
                 <span class="player-start-text">Play film <span class="muted">1:41 · sound on</span></span>
               </span>
             </button>
+          </div>
+          <div class="player-bar" data-quality hidden>
+            <fieldset class="quality">
+              <legend>Quality</legend>
+              <label><input type="radio" name="film-quality" value="auto" checked><span>Auto</span></label>
+              <label><input type="radio" name="film-quality" value="hd"><span>1080p</span></label>
+              <label><input type="radio" name="film-quality" value="uhd"><span>4K UHD</span></label>
+            </fieldset>
+            <p class="quality-status" data-quality-status aria-live="polite"></p>
           </div>
           <p class="player-desc" id="film-desc">The film has music and sound effects but no narration; every point it makes is written on screen. Chapters and the on-screen text are below.</p>
 
@@ -199,9 +211,9 @@
             </ul>
           </header>
           <figure class="before-shot" data-reveal>
-            <a class="shot" href="assets/img/before-workbooks-3440.webp" data-zoom data-w="3440" data-h="1560" data-srcset="assets/img/before-workbooks-1200.webp 1200w, assets/img/before-workbooks-2000.webp 2000w, assets/img/before-workbooks-3440.webp 3440w" data-caption="A term starts as three workbooks: the rooms, the timetable, and the Modules and their Tutors. Synthetic demonstration workbooks, from the product film.">
+            <a class="shot" href="assets/img/before-workbooks-3440.webp" data-zoom data-w="3440" data-h="1560" data-srcset="assets/img/before-workbooks-680.webp 680w, assets/img/before-workbooks-1020.webp 1020w, assets/img/before-workbooks-1360.webp 1360w, assets/img/before-workbooks-2040.webp 2040w, assets/img/before-workbooks-3440.webp 3440w" data-caption="A term starts as three workbooks: the rooms, the timetable, and the Modules and their Tutors. Synthetic demonstration workbooks, from the product film.">
               <span class="sr-only">Enlarge picture: </span>
-              <img src="assets/img/before-workbooks-1200.webp" srcset="assets/img/before-workbooks-720.webp 720w, assets/img/before-workbooks-1200.webp 1200w, assets/img/before-workbooks-2000.webp 2000w" sizes="(min-width: 1100px) 640px, 92vw" width="2000" height="906" alt="Three spreadsheets side by side under the heading Legacy spreadsheet workflow: Rooms, Timetable, and Modules and Tutors, with one session's row highlighted in each and lines joining them." loading="lazy" decoding="async">
+              <img src="assets/img/before-workbooks-680.webp" srcset="assets/img/before-workbooks-680.webp 680w, assets/img/before-workbooks-1020.webp 1020w, assets/img/before-workbooks-1360.webp 1360w, assets/img/before-workbooks-2040.webp 2040w, assets/img/before-workbooks-3440.webp 3440w" sizes="(min-width: 1467px) 672px, (min-width: 1328px) calc((1240px - 6vw) * 0.5834), (min-width: 960px) calc((94vw - 88px) * 0.5834), (min-width: 880px) calc(100vw - 88px), (min-width: 400px) 90vw, calc(100vw - 40px)" width="3440" height="1560" alt="Three spreadsheets side by side under the heading Legacy spreadsheet workflow: Rooms, Timetable, and Modules and Tutors, with one session's row highlighted in each and lines joining them." loading="lazy" decoding="async">
             </a>
             <figcaption>The three workbooks a term starts from, cross-checked row by row. Synthetic demonstration workbooks.</figcaption>
           </figure>
@@ -235,11 +247,11 @@
         <!-- Conflict detection -->
         <article class="cap cap-wide" aria-labelledby="f-conflicts">
           <figure class="cap-media" data-reveal>
-            <a class="shot" href="assets/img/conflict-3840.webp" data-zoom data-w="3840" data-h="1700" data-srcset="assets/img/conflict-1200.webp 1200w, assets/img/conflict-2000.webp 2000w, assets/img/conflict-3840.webp 3840w" data-caption="Validation findings: HB1.02 is double-booked on Wednesday and TW0.HUB on Monday. The clashing sessions carry a WARNING badge on the grid. Fictional demonstration data.">
+            <a class="shot" href="assets/img/conflict-3840.webp" data-zoom data-w="3840" data-h="1700" data-srcset="assets/img/conflict-960.webp 960w, assets/img/conflict-1240.webp 1240w, assets/img/conflict-1860.webp 1860w, assets/img/conflict-2480.webp 2480w, assets/img/conflict-3840.webp 3840w" data-caption="Validation findings: HB1.02 is double-booked on Wednesday and TW0.HUB on Monday. The clashing sessions carry a WARNING badge on the grid. Fictional demonstration data.">
               <span class="sr-only">Enlarge picture: </span>
               <picture>
-                <source media="(max-width: 639px)" srcset="assets/img/conflict-m-560.webp 560w, assets/img/conflict-m-816.webp 816w" sizes="calc(100vw - 40px)" width="816" height="610">
-                <img src="assets/img/conflict-1200.webp" srcset="assets/img/conflict-720.webp 720w, assets/img/conflict-1200.webp 1200w, assets/img/conflict-2000.webp 2000w" sizes="(min-width: 1300px) 1240px, 96vw" width="2000" height="886" alt="Validation findings: room HB1.02 is double-booked on Wednesday 10:00 to 12:00 and room TW0.HUB on Monday 08:00 to 10:00. On the grid, the two HB1.02 sessions, DSAI503 and ISBA601, each carry an amber WARNING badge." loading="lazy" decoding="async">
+                <source media="(max-width: 639px)" srcset="assets/img/conflict-m-560.webp 560w, assets/img/conflict-m-816.webp 816w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="816" height="610">
+                <img src="assets/img/conflict-1240.webp" srcset="assets/img/conflict-960.webp 960w, assets/img/conflict-1240.webp 1240w, assets/img/conflict-1860.webp 1860w, assets/img/conflict-2480.webp 2480w, assets/img/conflict-3840.webp 3840w" sizes="(min-width: 1328px) 1240px, (min-width: 880px) calc(100vw - 88px), (min-width: 400px) 90vw, calc(100vw - 40px)" width="3840" height="1700" alt="Validation findings: room HB1.02 is double-booked on Wednesday 10:00 to 12:00 and room TW0.HUB on Monday 08:00 to 10:00. On the grid, the two HB1.02 sessions, DSAI503 and ISBA601, each carry an amber WARNING badge." loading="lazy" decoding="async">
               </picture>
             </a>
             <figcaption><span class="only-phone">The clash on the grid: two sessions in HB1.02 on Wednesday 10:00–12:00.</span><span class="only-wide">Validation findings above the grid; the clashing sessions are flagged in place.</span></figcaption>
@@ -272,24 +284,24 @@
           </div>
           <div class="cap-media" data-reveal>
             <figure>
-              <a class="shot" href="assets/img/suggest-fixes-2000.webp" data-zoom data-w="2000" data-h="1820" data-srcset="assets/img/suggest-fixes-960.webp 960w, assets/img/suggest-fixes-1600.webp 1600w, assets/img/suggest-fixes-2000.webp 2000w" data-caption="Suggest fixes: a coordinated fix moves DSAI704, NSEC705 and SWDV603 together. It fixes 1 problem and creates none. Fictional demonstration data.">
+              <a class="shot" href="assets/img/suggest-fixes-2000.webp" data-zoom data-w="2000" data-h="1820" data-srcset="assets/img/suggest-fixes-680.webp 680w, assets/img/suggest-fixes-1020.webp 1020w, assets/img/suggest-fixes-1360.webp 1360w, assets/img/suggest-fixes-2000.webp 2000w" data-caption="Suggest fixes: a coordinated fix moves DSAI704, NSEC705 and SWDV603 together. It fixes 1 problem and creates none. Fictional demonstration data.">
                 <span class="sr-only">Enlarge picture: </span>
                 <picture>
-                  <source media="(max-width: 639px)" srcset="assets/img/suggest-fixes-m-520.webp 520w, assets/img/suggest-fixes-m-740.webp 740w" sizes="calc(100vw - 40px)" width="740" height="780">
-                  <img src="assets/img/suggest-fixes-960.webp" srcset="assets/img/suggest-fixes-960.webp 960w, assets/img/suggest-fixes-1600.webp 1600w" sizes="(min-width: 1100px) 640px, 92vw" width="1600" height="1456" alt="Suggest fixes in the Activity Inspector: move DSAI704 from Monday 08:00 to 10:00 to Thursday 13:00 to 15:00, NSEC705 to Tuesday 10:00 to 12:00, and SWDV603 A from room TW0.HUB to TW1.L1. Fixes 1 problem, creates none. Apply." loading="lazy" decoding="async">
+                  <source media="(max-width: 639px)" srcset="assets/img/suggest-fixes-m-520.webp 520w, assets/img/suggest-fixes-m-740.webp 740w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="740" height="780">
+                  <img src="assets/img/suggest-fixes-680.webp" srcset="assets/img/suggest-fixes-680.webp 680w, assets/img/suggest-fixes-1020.webp 1020w, assets/img/suggest-fixes-1360.webp 1360w, assets/img/suggest-fixes-2000.webp 2000w" sizes="(min-width: 1600px) 667px, (min-width: 1328px) calc((1240px - 6vw) * 0.5834), (min-width: 960px) calc((94vw - 88px) * 0.5834), (min-width: 880px) calc(100vw - 88px), 90vw" width="2000" height="1820" alt="Suggest fixes in the Activity Inspector: move DSAI704 from Monday 08:00 to 10:00 to Thursday 13:00 to 15:00, NSEC705 to Tuesday 10:00 to 12:00, and SWDV603 A from room TW0.HUB to TW1.L1. Fixes 1 problem, creates none. Apply." loading="lazy" decoding="async">
                 </picture>
               </a>
               <figcaption><b>Ask.</b> No single move works, so the fix moves three sessions together.</figcaption>
             </figure>
             <ul class="thumbs" aria-label="More screens of this fix">
               <li>
-                <a class="shot shot-thumb" href="assets/img/fix-preview-3700.webp" data-zoom data-w="3700" data-h="2112" data-srcset="assets/img/fix-preview-1200.webp 1200w, assets/img/fix-preview-2000.webp 2000w, assets/img/fix-preview-3700.webp 3700w" data-caption="Preview: the coordinated fix drawn on the grid before anything is saved; the old slot is dashed. Fictional demonstration data.">
-                  <img src="assets/img/fix-preview-720.webp" width="720" height="410" alt="Preview of the fix on the grid: the moved session outlined in its new Thursday slot, its old slot dashed." loading="lazy" decoding="async">
+                <a class="shot shot-thumb" href="assets/img/fix-preview-3700.webp" data-zoom data-w="3700" data-h="2112" data-srcset="assets/img/fix-preview-960.webp 960w, assets/img/fix-preview-3700.webp 3700w" data-caption="Preview: the coordinated fix drawn on the grid before anything is saved; the old slot is dashed. Fictional demonstration data.">
+                  <img src="assets/img/fix-preview-960.webp" width="960" height="548" alt="Preview of the fix on the grid: the moved session outlined in its new Thursday slot, its old slot dashed." loading="lazy" decoding="async">
                 </a>
                 <span><b>Preview.</b> Drawn on the grid; nothing saved yet.</span>
               </li>
               <li>
-                <a class="shot shot-thumb" href="assets/img/clean-v3-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/clean-v3-1600.webp 1600w, assets/img/clean-v3-3840.webp 3840w" data-caption="After Apply: Version 3, 0 findings, current and clean. The changed session is marked EDITED and the Timetable comparison explains what changed since the import. Fictional demonstration data.">
+                <a class="shot shot-thumb" href="assets/img/clean-v3-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/clean-v3-960.webp 960w, assets/img/clean-v3-3840.webp 3840w" data-caption="After Apply: Version 3, 0 findings, current and clean. The changed session is marked EDITED and the Timetable comparison explains what changed since the import. Fictional demonstration data.">
                   <img src="assets/img/clean-v3-960.webp" width="960" height="540" alt="The timetable after Apply: Version 3, 0 findings, current and clean, with the moved session marked EDITED." loading="lazy" decoding="async">
                 </a>
                 <span><b>Apply.</b> Version 3: 0 findings, current and clean.</span>
@@ -329,7 +341,7 @@
             </figure>
             <ul class="thumbs thumbs-one" aria-label="More screens of this edit">
               <li>
-                <a class="shot shot-thumb" href="assets/img/drag-drop-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/drag-drop-1600.webp 1600w, assets/img/drag-drop-3840.webp 3840w" data-caption="After the drop: the session sits at 15:00–17:00 and the Schedule editing panel shows Start Time 15:00 and End Time 17:00, not applied yet. Fictional demonstration data.">
+                <a class="shot shot-thumb" href="assets/img/drag-drop-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/drag-drop-960.webp 960w, assets/img/drag-drop-3840.webp 3840w" data-caption="After the drop: the session sits at 15:00–17:00 and the Schedule editing panel shows Start Time 15:00 and End Time 17:00, not applied yet. Fictional demonstration data.">
                   <img src="assets/img/drag-drop-960.webp" width="960" height="540" alt="The session dropped at 15:00 to 17:00 on Wednesday, with the Schedule editing panel showing the new start and end times, not applied yet." loading="lazy" decoding="async">
                 </a>
                 <span><b>The editor follows.</b> Start 15:00, end 17:00, not applied yet.</span>
@@ -351,21 +363,21 @@
           </div>
           <div class="pair">
             <figure data-reveal>
-              <a class="shot" href="assets/img/split-1080.webp" data-zoom data-w="1080" data-h="1720" data-srcset="assets/img/split-640.webp 640w, assets/img/split-1080.webp 1080w" data-caption="Split 4 h into 2 × 2 h: the original session, the two sessions after the split, and Apply split. Fictional demonstration data.">
+              <a class="shot" href="assets/img/split-1080.webp" data-zoom data-w="1080" data-h="1720" data-srcset="assets/img/split-420.webp 420w, assets/img/split-840.webp 840w, assets/img/split-1080.webp 1080w" data-caption="Split 4 h into 2 × 2 h: the original session, the two sessions after the split, and Apply split. Fictional demonstration data.">
                 <span class="sr-only">Enlarge picture: </span>
                 <picture>
-                  <source media="(max-width: 639px)" srcset="assets/img/split-m-640.webp 640w, assets/img/split-m-940.webp 940w" sizes="calc(100vw - 40px)" width="940" height="1020">
-                  <img src="assets/img/split-640.webp" srcset="assets/img/split-640.webp 640w, assets/img/split-1080.webp 1080w" sizes="(min-width: 900px) 420px, 80vw" width="1080" height="1720" alt="The Split into 2 × 2 h panel: the original Thursday 08:00 to 12:00 session in room TW2.L2, then Session 1 from 08:00 to 10:00 and Session 2 from 10:00 to 12:00 in the same room and teaching weeks." loading="lazy" decoding="async">
+                  <source media="(max-width: 639px)" srcset="assets/img/split-m-640.webp 640w, assets/img/split-m-940.webp 940w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="940" height="1020">
+                  <img src="assets/img/split-420.webp" srcset="assets/img/split-420.webp 420w, assets/img/split-840.webp 840w, assets/img/split-1080.webp 1080w" sizes="(min-width: 960px) 420px, (min-width: 880px) calc(48vw - 44px), 43vw" width="1080" height="1720" alt="The Split into 2 × 2 h panel: the original Thursday 08:00 to 12:00 session in room TW2.L2, then Session 1 from 08:00 to 10:00 and Session 2 from 10:00 to 12:00 in the same room and teaching weeks." loading="lazy" decoding="async">
                 </picture>
               </a>
               <figcaption><b>Split.</b> One 4-hour lab becomes two 2-hour sessions, same room and weeks.</figcaption>
             </figure>
             <figure data-reveal>
-              <a class="shot" href="assets/img/merge-1120.webp" data-zoom data-w="1120" data-h="2080" data-srcset="assets/img/merge-640.webp 640w, assets/img/merge-1120.webp 1120w" data-caption="Merge Activities: two Streams of one Module, 14 + 12 = 26 students, the same Tutor and weeks, and a room with 30 seats. Fictional demonstration data.">
+              <a class="shot" href="assets/img/merge-1120.webp" data-zoom data-w="1120" data-h="2080" data-srcset="assets/img/merge-420.webp 420w, assets/img/merge-840.webp 840w, assets/img/merge-1120.webp 1120w" data-caption="Merge Activities: two Streams of one Module, 14 + 12 = 26 students, the same Tutor and weeks, and a room with 30 seats. Fictional demonstration data.">
                 <span class="sr-only">Enlarge picture: </span>
                 <picture>
-                  <source media="(max-width: 639px)" srcset="assets/img/merge-m-720.webp 720w, assets/img/merge-m-1080.webp 1080w" sizes="calc(100vw - 40px)" width="1080" height="850">
-                  <img src="assets/img/merge-640.webp" srcset="assets/img/merge-640.webp 640w, assets/img/merge-1120.webp 1120w" sizes="(min-width: 900px) 420px, 80vw" width="1120" height="2080" alt="The Merge Activities preview for Streams N and P of DSAI802 on Thursday 15:00 to 17:00: 14 + 12 = 26 students, the same Tutor for both, the same teaching weeks, and room HB2.10 with 30 seats for 26 students." loading="lazy" decoding="async">
+                  <source media="(max-width: 639px)" srcset="assets/img/merge-m-720.webp 720w, assets/img/merge-m-1080.webp 1080w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="1080" height="850">
+                  <img src="assets/img/merge-420.webp" srcset="assets/img/merge-420.webp 420w, assets/img/merge-840.webp 840w, assets/img/merge-1120.webp 1120w" sizes="(min-width: 960px) 420px, (min-width: 880px) calc(48vw - 44px), 43vw" width="1120" height="2080" alt="The Merge Activities preview for Streams N and P of DSAI802 on Thursday 15:00 to 17:00: 14 + 12 = 26 students, the same Tutor for both, the same teaching weeks, and room HB2.10 with 30 seats for 26 students." loading="lazy" decoding="async">
                 </picture>
               </a>
               <figcaption><b>Merge.</b> 14 + 12 = 26 students, the same Tutor, 30 seats.</figcaption>
@@ -390,11 +402,11 @@
             </ol>
           </div>
           <figure class="cap-media history-shot" data-reveal>
-            <a class="shot" href="assets/img/history-1120.webp" data-zoom data-w="1120" data-h="2080" data-srcset="assets/img/history-640.webp 640w, assets/img/history-1120.webp 1120w" data-caption="Timetable history: Version 3, its note and the three changes from Version 2. Fictional demonstration data.">
+            <a class="shot" href="assets/img/history-1120.webp" data-zoom data-w="1120" data-h="2080" data-srcset="assets/img/history-430.webp 430w, assets/img/history-860.webp 860w, assets/img/history-1120.webp 1120w" data-caption="Timetable history: Version 3, its note and the three changes from Version 2. Fictional demonstration data.">
               <span class="sr-only">Enlarge picture: </span>
               <picture>
-                <source media="(max-width: 639px)" srcset="assets/img/history-m-720.webp 720w, assets/img/history-m-1056.webp 1056w" sizes="calc(100vw - 40px)" width="1056" height="1110">
-                <img src="assets/img/history-640.webp" srcset="assets/img/history-640.webp 640w, assets/img/history-1120.webp 1120w" sizes="(min-width: 900px) 420px, 80vw" width="1120" height="2080" alt="The Timetable history dialog: the current timetable, 2026 S2 Version 3, with its suggested-fix note and three changes from the previous Version: two time changes and one room change, and a View changes button." loading="lazy" decoding="async">
+                <source media="(max-width: 639px)" srcset="assets/img/history-m-720.webp 720w, assets/img/history-m-1056.webp 1056w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="1056" height="1110">
+                <img src="assets/img/history-430.webp" srcset="assets/img/history-430.webp 430w, assets/img/history-860.webp 860w, assets/img/history-1120.webp 1120w" sizes="(min-width: 960px) 430px, 400px" width="1120" height="2080" alt="The Timetable history dialog: the current timetable, 2026 S2 Version 3, with its suggested-fix note and three changes from the previous Version: two time changes and one room change, and a View changes button." loading="lazy" decoding="async">
               </picture>
             </a>
             <figcaption>Version 3 and the three changes it made.</figcaption>
@@ -415,38 +427,38 @@
           <div class="cap-media" data-reveal>
             <div class="paper-stack">
               <figure class="paper">
-                <a class="shot shot-paper" href="assets/img/pdf-day-2800.webp" data-zoom data-w="2800" data-h="1980" data-srcset="assets/img/pdf-day-960.webp 960w, assets/img/pdf-day-1600.webp 1600w, assets/img/pdf-day-2800.webp 2800w" data-caption="Page 1 of a PDF by day, made by the app: Monday, one column per Stage, A4 landscape. Fictional demonstration data.">
+                <a class="shot shot-paper" href="assets/img/pdf-day-2800.webp" data-zoom data-w="2800" data-h="1980" data-srcset="assets/img/pdf-day-650.webp 650w, assets/img/pdf-day-975.webp 975w, assets/img/pdf-day-1300.webp 1300w, assets/img/pdf-day-1950.webp 1950w, assets/img/pdf-day-2800.webp 2800w" data-caption="Page 1 of a PDF by day, made by the app: Monday, one column per Stage, A4 landscape. Fictional demonstration data.">
                   <span class="sr-only">Enlarge picture: </span>
                   <picture>
-                    <source media="(max-width: 639px)" srcset="assets/img/pdf-day-m-720.webp 720w, assets/img/pdf-day-m-1200.webp 1200w" sizes="calc(100vw - 40px)" width="1200" height="1026">
-                    <img src="assets/img/pdf-day-960.webp" srcset="assets/img/pdf-day-960.webp 960w, assets/img/pdf-day-1600.webp 1600w" sizes="(min-width: 1100px) 680px, 92vw" width="1600" height="1132" alt="Page 1 of the timetable PDF: CfIT Timetable 2026 S2, Monday, with one column per Stage and each session's Module, time, room and Tutor." loading="lazy" decoding="async">
+                    <source media="(max-width: 639px)" srcset="assets/img/pdf-day-m-720.webp 720w, assets/img/pdf-day-m-1200.webp 1200w" sizes="(min-width: 400px) 90vw, calc(100vw - 40px)" width="1200" height="1027">
+                    <img src="assets/img/pdf-day-650.webp" srcset="assets/img/pdf-day-650.webp 650w, assets/img/pdf-day-975.webp 975w, assets/img/pdf-day-1300.webp 1300w, assets/img/pdf-day-1950.webp 1950w" sizes="(min-width: 1600px) 637px, (min-width: 1328px) calc((1240px - 6vw) * 0.5573), (min-width: 1100px) calc((94vw - 88px) * 0.5573), (min-width: 880px) calc((100vw - 88px) * 0.88), 79.2vw" width="1950" height="1379" alt="Page 1 of the timetable PDF: CfIT Timetable 2026 S2, Monday, with one column per Stage and each session's Module, time, room and Tutor." loading="lazy" decoding="async">
                   </picture>
                 </a>
                 <figcaption>A PDF page, exactly as the app makes it.</figcaption>
               </figure>
               <figure class="paper-dialog">
-                <a class="shot" href="assets/img/export-dialog-1160.webp" data-zoom data-w="1160" data-h="860" data-srcset="assets/img/export-dialog-640.webp 640w, assets/img/export-dialog-1160.webp 1160w" data-caption="Export timetable: the exact saved Version 3 as a CFIT Change Review workbook, 100 rows, 4 of them changed. Fictional demonstration data.">
+                <a class="shot" href="assets/img/export-dialog-1160.webp" data-zoom data-w="1160" data-h="860" data-srcset="assets/img/export-dialog-340.webp 340w, assets/img/export-dialog-680.webp 680w, assets/img/export-dialog-1160.webp 1160w" data-caption="Export timetable: the exact saved Version 3 as a CFIT Change Review workbook, 100 rows, 4 of them changed. Fictional demonstration data.">
                   <span class="sr-only">Enlarge picture: </span>
-                  <img src="assets/img/export-dialog-640.webp" srcset="assets/img/export-dialog-640.webp 640w, assets/img/export-dialog-1160.webp 1160w" sizes="(min-width: 1100px) 340px, (max-width: 639px) calc(100vw - 40px), 60vw" width="1160" height="860" alt="The Export timetable dialog: workbook format CFIT Change Review (.xlsx), ready, Version 3, 100 rows, 4 changed rows, and a Download CFIT Change Review button." loading="lazy" decoding="async">
+                  <img src="assets/img/export-dialog-340.webp" srcset="assets/img/export-dialog-340.webp 340w, assets/img/export-dialog-680.webp 680w, assets/img/export-dialog-1160.webp 1160w" sizes="(min-width: 1600px) 334px, (min-width: 1328px) calc((1240px - 6vw) * 0.2913), (min-width: 1100px) calc((94vw - 88px) * 0.2913), (min-width: 880px) calc((100vw - 88px) * 0.46), (min-width: 640px) 41.4vw, (min-width: 400px) 73.8vw, calc(82vw - 33px)" width="1160" height="860" alt="The Export timetable dialog: workbook format CFIT Change Review (.xlsx), ready, Version 3, 100 rows, 4 changed rows, and a Download CFIT Change Review button." loading="lazy" decoding="async">
                 </a>
               </figure>
             </div>
             <ul class="thumbs" aria-label="More screens of import and export">
               <li>
-                <a class="shot shot-thumb" href="assets/img/import-check-2794.webp" data-zoom data-w="2794" data-h="1834" data-srcset="assets/img/import-check-960.webp 960w, assets/img/import-check-1600.webp 1600w, assets/img/import-check-2794.webp 2794w" data-caption="Importing a timetable, Check step: 99 source rows, the CFIT Standard template, 0 errors and 0 warnings. Nothing is saved yet. Fictional demonstration data.">
+                <a class="shot shot-thumb" href="assets/img/import-check-2794.webp" data-zoom data-w="2794" data-h="1833" data-srcset="assets/img/import-check-960.webp 960w, assets/img/import-check-2794.webp 2794w" data-caption="Importing a timetable, Check step: 99 source rows, the CFIT Standard template, 0 errors and 0 warnings. Nothing is saved yet. Fictional demonstration data.">
                   <img src="assets/img/import-check-960.webp" width="960" height="630" alt="The Check step of an import: 99 source rows, 67 Activities, 95 scheduled sessions, 0 errors and 0 warnings." loading="lazy" decoding="async">
                 </a>
                 <span><b>Import, check.</b> 99 rows, 0 errors, 0 warnings.</span>
               </li>
               <li>
-                <a class="shot shot-thumb" href="assets/img/import-confirm-2794.webp" data-zoom data-w="2794" data-h="1680" data-srcset="assets/img/import-confirm-960.webp 960w, assets/img/import-confirm-1600.webp 1600w, assets/img/import-confirm-2794.webp 2794w" data-caption="Import, Confirm step: this file starts the 2026 S2 timetable with 67 Activities and 95 scheduled sessions. Nothing is saved until you confirm. Fictional demonstration data.">
-                  <img src="assets/img/import-confirm-960.webp" width="960" height="578" alt="The Confirm step of an import: What will happen says the file starts the 2026 S2 timetable; nothing is saved until you confirm." loading="lazy" decoding="async">
+                <a class="shot shot-thumb" href="assets/img/import-confirm-2794.webp" data-zoom data-w="2794" data-h="1680" data-srcset="assets/img/import-confirm-960.webp 960w, assets/img/import-confirm-2794.webp 2794w" data-caption="Import, Confirm step: this file starts the 2026 S2 timetable with 67 Activities and 95 scheduled sessions. Nothing is saved until you confirm. Fictional demonstration data.">
+                  <img src="assets/img/import-confirm-960.webp" width="960" height="577" alt="The Confirm step of an import: What will happen says the file starts the 2026 S2 timetable; nothing is saved until you confirm." loading="lazy" decoding="async">
                 </a>
                 <span><b>Import, confirm.</b> Nothing saved until you say so.</span>
               </li>
               <li>
-                <a class="shot shot-thumb" href="assets/img/print-dialog-2480.webp" data-zoom data-w="2480" data-h="2090" data-srcset="assets/img/print-dialog-960.webp 960w, assets/img/print-dialog-1600.webp 1600w, assets/img/print-dialog-2480.webp 2480w" data-caption="Print: the app makes an A4 landscape PDF by day, one column per Stage, 5 pages, with a preview. Fictional demonstration data.">
-                  <img src="assets/img/print-dialog-960.webp" width="960" height="810" alt="The Print dialog set to By day, all teaching weeks, A4 landscape: Version 3, no problems found, 5 pages, with a preview and Download PDF and Print buttons." loading="lazy" decoding="async">
+                <a class="shot shot-thumb" href="assets/img/print-dialog-2480.webp" data-zoom data-w="2480" data-h="2090" data-srcset="assets/img/print-dialog-960.webp 960w, assets/img/print-dialog-2480.webp 2480w" data-caption="Print: the app makes an A4 landscape PDF by day, one column per Stage, 5 pages, with a preview. Fictional demonstration data.">
+                  <img src="assets/img/print-dialog-960.webp" width="960" height="809" alt="The Print dialog set to By day, all teaching weeks, A4 landscape: Version 3, no problems found, 5 pages, with a preview and Download PDF and Print buttons." loading="lazy" decoding="async">
                 </a>
                 <span><b>Print.</b> A4 landscape, by day or by Stage.</span>
               </li>
@@ -462,25 +474,25 @@
           </div>
           <ul class="gallery-grid">
             <li>
-              <a class="shot shot-thumb" href="assets/img/hero-day-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/hero-day-1600.webp 1600w, assets/img/hero-day-2400.webp 2400w, assets/img/hero-day-3840.webp 3840w" data-caption="The Day view right after a term is imported: one column per Stage, one card per session, 0 findings. Fictional demonstration data.">
+              <a class="shot shot-thumb" href="assets/img/hero-day-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/hero-day-960.webp 960w, assets/img/hero-day-1280.webp 1280w, assets/img/hero-day-1920.webp 1920w, assets/img/hero-day-2560.webp 2560w, assets/img/hero-day-3840.webp 3840w" data-caption="The Day view right after a term is imported: one column per Stage, one card per session, 0 findings. Fictional demonstration data.">
                 <img src="assets/img/hero-day-960.webp" width="960" height="540" alt="Day view: one column per Stage for Monday." loading="lazy" decoding="async">
               </a>
               <span>Day view</span>
             </li>
             <li>
-              <a class="shot shot-thumb" href="assets/img/view-stage-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-stage-1600.webp 1600w, assets/img/view-stage-3840.webp 3840w" data-caption="Stage view: Stage S1 from Monday to Friday. Fictional demonstration data.">
+              <a class="shot shot-thumb" href="assets/img/view-stage-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-stage-960.webp 960w, assets/img/view-stage-3840.webp 3840w" data-caption="Stage view: Stage S1 from Monday to Friday. Fictional demonstration data.">
                 <img src="assets/img/view-stage-960.webp" width="960" height="540" alt="Stage view for Stage S1: one column per weekday from Monday to Friday." loading="lazy" decoding="async">
               </a>
               <span>Stage view</span>
             </li>
             <li>
-              <a class="shot shot-thumb" href="assets/img/view-week-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-week-1600.webp 1600w, assets/img/view-week-3840.webp 3840w" data-caption="Week view: Monday to Friday side by side, every Stage. Fictional demonstration data.">
+              <a class="shot shot-thumb" href="assets/img/view-week-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-week-960.webp 960w, assets/img/view-week-3840.webp 3840w" data-caption="Week view: Monday to Friday side by side, every Stage. Fictional demonstration data.">
                 <img src="assets/img/view-week-960.webp" width="960" height="540" alt="Week view: the whole teaching week from Monday to Friday, with every Stage's sessions under each day." loading="lazy" decoding="async">
               </a>
               <span>Week view</span>
             </li>
             <li>
-              <a class="shot shot-thumb" href="assets/img/view-inspector-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-inspector-1600.webp 1600w, assets/img/view-inspector-3840.webp 3840w" data-caption="The Activity Inspector beside the grid: when and where, who, and the Module. Fictional demonstration data.">
+              <a class="shot shot-thumb" href="assets/img/view-inspector-3840.webp" data-zoom data-w="3840" data-h="2160" data-srcset="assets/img/view-inspector-960.webp 960w, assets/img/view-inspector-3840.webp 3840w" data-caption="The Activity Inspector beside the grid: when and where, who, and the Module. Fictional demonstration data.">
                 <img src="assets/img/view-inspector-960.webp" width="960" height="540" alt="A selected session opens the Activity Inspector beside the grid, with its placements, Tutor and Module." loading="lazy" decoding="async">
               </a>
               <span>Activity Inspector</span>

@@ -1,36 +1,392 @@
 {
-  "$comment": "Every picture on the site: where it comes from and how it is cut. Coordinates are in the source frame (3840x2160 for recordings; crop = w:h:x:y). 'widths' are the in-page sizes; 'zoom' is the size the image viewer opens (native resolution of the crop, so pinch-zoom shows real detail); 'mobileOf' marks a tighter crop shown on phones in place of that picture. Rebuild with tools/build-media.mjs. All data shown is fictional demonstration data.",
+  "$comment": "Every picture on the site: where it comes from and how it is cut. Coordinates are in the source frame (3840x2160 for recordings; crop = w:h:x:y). 'widths' are the in-page sizes, matched to the layout (1x, 1.5x, 2x and the crop's native width); 'zoom' is the size the image viewer opens (the crop's native resolution); 'mobileOf' marks a tighter crop shown on phones in place of that picture; 'encode': 'thumb' marks pictures shown only as small thumbnails (lossy WebP); 'encode': 'photo' marks frames of the film (lossy WebP q90-92). Other files: near-lossless WebP below native size, lossless at native size. Never wider than the source. Rebuild with tools/build-media.mjs. All data shown is fictional demonstration data. 'sizes' and 'src' (the 1x desktop file) feed tools/sync-srcset.mjs, which writes srcset, sizes and the viewer's data-srcset into index.html.",
   "images": [
-    { "id": "hero-day", "root": "footage", "src": "R01a-overview-plate/stills/R01a-overview-plate_01_4.00s_Monday-Day-view-clean-timetable.png", "widths": [2400, 1600, 960], "zoom": 3840, "shows": "Day view right after an import: one column per Stage, 0 findings" },
-    { "id": "before-workbooks", "root": "trailer", "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov", "frame": 330, "crop": "3440:1560:200:150", "widths": [2000, 1200, 720], "zoom": 3440, "shows": "The three synthetic demonstration workbooks a term starts from (the film's opening shot, caption left out)" },
-    { "id": "import-check", "root": "footage", "src": "R02-import/stills/R02-import_04_18.87s_Check-99-source-rows-67-Activities-95-scheduled-sessions-CFI.png", "crop": "2794:1833:528:250", "widths": [1600, 960], "zoom": 2794, "shows": "Import, Check step: 99 source rows, 0 errors, 0 warnings, nothing saved yet" },
-    { "id": "import-confirm", "root": "footage", "src": "R02-import/stills/R02-import_08_36.78s_Confirm-what-will-happen-nothing-is-saved-until-you-confirm.png", "crop": "2794:1680:528:480", "widths": [1600, 960], "zoom": 2794, "shows": "Import, Confirm step: what will happen; nothing is saved until you confirm" },
-    { "id": "conflict", "root": "footage", "src": "01-room-conflict/stills/01-room-conflict_03_6.05s_the-clash-DSAI503-and-ISBA601-both-in-HB1-02.png", "crop": "3840:1700:0:0", "widths": [2000, 1200, 720], "zoom": 3840, "shows": "Validation findings: two rooms double-booked; the clashing sessions marked WARNING on the grid" },
-    { "id": "conflict-m", "mobileOf": "conflict", "root": "footage", "src": "01-room-conflict/stills/01-room-conflict_03_6.05s_the-clash-DSAI503-and-ISBA601-both-in-HB1-02.png", "crop": "816:610:1076:990", "widths": [816, 560], "shows": "Phone crop: the two WARNING sessions in room HB1.02, Wednesday 10:00-12:00" },
-    { "id": "suggest-fixes", "root": "footage", "src": "02-coordinated-fix/stills/02-coordinated-fix_05_12.23s_read-three-sessions-move-together-fixes-1-problem-creates-no.png", "crop": "2000:1820:1690:0", "widths": [1600, 960], "zoom": 2000, "shows": "A coordinated fix that moves three sessions together: fixes 1 problem, creates none" },
-    { "id": "suggest-fixes-m", "mobileOf": "suggest-fixes", "root": "footage", "src": "02-coordinated-fix/stills/02-coordinated-fix_05_12.23s_read-three-sessions-move-together-fixes-1-problem-creates-no.png", "crop": "740:780:2944:1030", "widths": [740, 520], "shows": "Phone crop: the coordinated fix in the Activity Inspector, with Apply" },
-    { "id": "fix-preview", "root": "footage", "src": "02-coordinated-fix/stills/02-coordinated-fix_09_29.77s_preview-DSAI704-on-Thursday-13-00-NSEC705-old-slot-dashed.png", "crop": "3700:2112:140:0", "widths": [2000, 1200, 720], "zoom": 3700, "shows": "The coordinated fix previewed on the grid, the old slot dashed" },
-    { "id": "clean-v3", "root": "footage", "src": "02-coordinated-fix/stills/02-coordinated-fix_12_41.95s_top-Version-3-0-findings-current-and-clean.png", "widths": [1600, 960], "zoom": 3840, "shows": "After Apply: Version 3, 0 findings, current and clean; the changed session marked EDITED" },
-    { "id": "view-week", "root": "footage", "src": "R01d-week-view/stills/R01d-week-view_04_31.47s_Week-view-clean-plate.png", "widths": [1600, 960], "zoom": 3840, "shows": "Week view: Monday to Friday side by side" },
-    { "id": "view-stage", "root": "footage", "src": "R01c-stage-view/stills/R01c-stage-view_02_8.00s_Stage-view-S1-Monday-to-Friday.png", "widths": [1600, 960], "zoom": 3840, "shows": "Stage view: one Stage across the whole week" },
-    { "id": "view-inspector", "root": "footage", "src": "R01e-activity-inspector/stills/R01e-activity-inspector_03_10.28s_the-Activity-Inspector-beside-the-grid-When-where-Who-Module.png", "widths": [1600, 960], "zoom": 3840, "shows": "The Activity Inspector beside the grid: when and where, who, the Module" },
-    { "id": "drag-drop", "root": "footage", "src": "R06a-drag-and-drop/stills/R06a-drag-and-drop_06_27.45s_dropped-at-15-00-17-00-the-editor-shows-the-new-time.png", "widths": [1600, 960], "zoom": 3840, "shows": "A session dropped at 15:00-17:00; the editor shows the new time before Apply" },
-    { "id": "split", "root": "footage", "src": "R06b-split-session/stills/R06b-split-session_05_21.22s_preview-Session-1-08-00-10-00-and-Session-2-10-00-12-00-same.png", "crop": "1080:1720:2620:0", "widths": [1080, 640], "zoom": 1080, "shows": "Split 4 h into 2 x 2 h, previewed before Apply split" },
-    { "id": "split-m", "mobileOf": "split", "root": "footage", "src": "R06b-split-session/stills/R06b-split-session_05_21.22s_preview-Session-1-08-00-10-00-and-Session-2-10-00-12-00-same.png", "crop": "940:1020:2696:300", "widths": [940, 640], "shows": "Phone crop: the original 4-hour session and the two 2-hour sessions after the split" },
-    { "id": "merge", "root": "footage", "src": "R06c-merge-streams/stills/R06c-merge-streams_10_37.02s_preview-Thursday-15-00-17-00-14-12-26-students-same-Tutor-HB.png", "crop": "1120:2080:1360:40", "widths": [1120, 640], "zoom": 1120, "shows": "The Merge dialog: 14 + 12 = 26 students, same Tutor, a room that fits" },
-    { "id": "merge-m", "mobileOf": "merge", "root": "footage", "src": "R06c-merge-streams/stills/R06c-merge-streams_10_37.02s_preview-Thursday-15-00-17-00-14-12-26-students-same-Tutor-HB.png", "crop": "1080:850:1380:1240", "widths": [1080, 720], "shows": "Phone crop: the merge preview, 14 + 12 = 26 students, the same Tutor, 30 seats" },
-    { "id": "history", "root": "footage", "src": "03-history/stills/03-history_03_9.52s_Version-3-the-three-changes-of-the-coordinated-fix.png", "crop": "1120:2080:1360:40", "widths": [1120, 640], "zoom": 1120, "shows": "History: Version 3 and the three changes it made" },
-    { "id": "history-m", "mobileOf": "history", "root": "footage", "src": "03-history/stills/03-history_03_9.52s_Version-3-the-three-changes-of-the-coordinated-fix.png", "crop": "1056:1110:1392:270", "widths": [1056, 720], "shows": "Phone crop: Version 3, its note and the three changes from Version 2" },
-    { "id": "export-dialog", "root": "footage", "src": "R07a-export-excel/stills/R07a-export-excel_03_8.07s_Export-timetable-the-exact-saved-Version-3-100-rows-ready.png", "crop": "1160:860:1340:650", "widths": [1160, 640], "zoom": 1160, "shows": "Export: the exact saved Version as a Change Review workbook, 100 rows, 4 changed" },
-    { "id": "print-dialog", "root": "footage", "src": "R07b-print-pdf/stills/R07b-print-pdf_03_8.05s_PDF-made-By-day-all-teaching-weeks-A4-landscape-5-pages.png", "crop": "2480:2090:680:36", "widths": [1600, 960], "zoom": 2480, "shows": "Print: an A4 landscape PDF by day, made in the browser, 5 pages" },
-    { "id": "pdf-day", "root": "footage", "src": "_assets/pdf/CFIT_PDF_by-day_Version3_page1_400dpi.png", "widths": [1600, 960], "zoom": 2800, "shows": "Page 1 of a PDF by day, as the app makes it" },
-    { "id": "pdf-day-m", "mobileOf": "pdf-day", "root": "footage", "src": "_assets/pdf/CFIT_PDF_by-day_Version3_page1_400dpi.png", "crop": "1730:1480:140:140", "widths": [1200, 720], "shows": "Phone crop: the page title and the first three Stages, 08:00-12:00" },
-    { "id": "film-poster", "root": "trailer", "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov", "frame": 5970, "widths": [1920], "shows": "The film's end card over the fixed timetable" },
-    { "id": "og-card", "root": "trailer", "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov", "frame": 5970, "crop": "3840:2010:0:40", "widths": [1200], "height": 630, "format": "jpg", "shows": "Link preview card" }
+    {
+      "id": "hero-day",
+      "root": "footage",
+      "widths": [
+        3840,
+        2560,
+        1920,
+        1280,
+        960
+      ],
+      "zoom": 3840,
+      "shows": "Day view right after an import: one column per Stage, 0 findings",
+      "src": 1280,
+      "sizes": "(min-width: 1370px) 1280px, (min-width: 880px) calc(100vw - 90px), (min-width: 400px) calc(90vw - 2px), calc(100vw - 42px)"
+    },
+    {
+      "id": "before-workbooks",
+      "root": "trailer",
+      "frame": 330,
+      "crop": "3440:1560:200:150",
+      "widths": [
+        3440,
+        2040,
+        1360,
+        1020,
+        680
+      ],
+      "zoom": 3440,
+      "shows": "The three synthetic demonstration workbooks a term starts from (the film's opening shot, caption left out)",
+      "encode": "photo",
+      "src": 680,
+      "sizes": "(min-width: 1467px) 672px, (min-width: 1328px) calc((1240px - 6vw) * 0.5834), (min-width: 960px) calc((94vw - 88px) * 0.5834), (min-width: 880px) calc(100vw - 88px), (min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "import-check",
+      "root": "footage",
+      "src": "R02-import/stills/R02-import_04_18.87s_Check-99-source-rows-67-Activities-95-scheduled-sessions-CFI.png",
+      "crop": "2794:1833:528:250",
+      "widths": [
+        960
+      ],
+      "zoom": 2794,
+      "shows": "Import, Check step: 99 source rows, 0 errors, 0 warnings, nothing saved yet",
+      "encode": "thumb"
+    },
+    {
+      "id": "import-confirm",
+      "root": "footage",
+      "src": "R02-import/stills/R02-import_08_36.78s_Confirm-what-will-happen-nothing-is-saved-until-you-confirm.png",
+      "crop": "2794:1680:528:480",
+      "widths": [
+        960
+      ],
+      "zoom": 2794,
+      "shows": "Import, Confirm step: what will happen; nothing is saved until you confirm",
+      "encode": "thumb"
+    },
+    {
+      "id": "conflict",
+      "root": "footage",
+      "crop": "3840:1700:0:0",
+      "widths": [
+        3840,
+        2480,
+        1860,
+        1240,
+        960
+      ],
+      "zoom": 3840,
+      "shows": "Validation findings: two rooms double-booked; the clashing sessions marked WARNING on the grid",
+      "src": 1240,
+      "sizes": "(min-width: 1328px) 1240px, (min-width: 880px) calc(100vw - 88px), (min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "conflict-m",
+      "mobileOf": "conflict",
+      "root": "footage",
+      "src": "01-room-conflict/stills/01-room-conflict_03_6.05s_the-clash-DSAI503-and-ISBA601-both-in-HB1-02.png",
+      "crop": "816:610:1076:990",
+      "widths": [
+        816,
+        560
+      ],
+      "shows": "Phone crop: the two WARNING sessions in room HB1.02, Wednesday 10:00-12:00",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "suggest-fixes",
+      "root": "footage",
+      "crop": "2000:1820:1690:0",
+      "widths": [
+        2000,
+        1360,
+        1020,
+        680
+      ],
+      "zoom": 2000,
+      "shows": "A coordinated fix that moves three sessions together: fixes 1 problem, creates none",
+      "src": 680,
+      "sizes": "(min-width: 1600px) 667px, (min-width: 1328px) calc((1240px - 6vw) * 0.5834), (min-width: 960px) calc((94vw - 88px) * 0.5834), (min-width: 880px) calc(100vw - 88px), 90vw"
+    },
+    {
+      "id": "suggest-fixes-m",
+      "mobileOf": "suggest-fixes",
+      "root": "footage",
+      "src": "02-coordinated-fix/stills/02-coordinated-fix_05_12.23s_read-three-sessions-move-together-fixes-1-problem-creates-no.png",
+      "crop": "740:780:2944:1030",
+      "widths": [
+        740,
+        520
+      ],
+      "shows": "Phone crop: the coordinated fix in the Activity Inspector, with Apply",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "fix-preview",
+      "root": "footage",
+      "src": "02-coordinated-fix/stills/02-coordinated-fix_09_29.77s_preview-DSAI704-on-Thursday-13-00-NSEC705-old-slot-dashed.png",
+      "crop": "3700:2112:140:0",
+      "widths": [
+        960
+      ],
+      "zoom": 3700,
+      "shows": "The coordinated fix previewed on the grid, the old slot dashed",
+      "encode": "thumb"
+    },
+    {
+      "id": "clean-v3",
+      "root": "footage",
+      "src": "02-coordinated-fix/stills/02-coordinated-fix_12_41.95s_top-Version-3-0-findings-current-and-clean.png",
+      "widths": [
+        960
+      ],
+      "zoom": 3840,
+      "shows": "After Apply: Version 3, 0 findings, current and clean; the changed session marked EDITED",
+      "encode": "thumb"
+    },
+    {
+      "id": "view-week",
+      "root": "footage",
+      "src": "R01d-week-view/stills/R01d-week-view_04_31.47s_Week-view-clean-plate.png",
+      "widths": [
+        960
+      ],
+      "zoom": 3840,
+      "shows": "Week view: Monday to Friday side by side",
+      "encode": "thumb"
+    },
+    {
+      "id": "view-stage",
+      "root": "footage",
+      "src": "R01c-stage-view/stills/R01c-stage-view_02_8.00s_Stage-view-S1-Monday-to-Friday.png",
+      "widths": [
+        960
+      ],
+      "zoom": 3840,
+      "shows": "Stage view: one Stage across the whole week",
+      "encode": "thumb"
+    },
+    {
+      "id": "view-inspector",
+      "root": "footage",
+      "src": "R01e-activity-inspector/stills/R01e-activity-inspector_03_10.28s_the-Activity-Inspector-beside-the-grid-When-where-Who-Module.png",
+      "widths": [
+        960
+      ],
+      "zoom": 3840,
+      "shows": "The Activity Inspector beside the grid: when and where, who, the Module",
+      "encode": "thumb"
+    },
+    {
+      "id": "drag-drop",
+      "root": "footage",
+      "src": "R06a-drag-and-drop/stills/R06a-drag-and-drop_06_27.45s_dropped-at-15-00-17-00-the-editor-shows-the-new-time.png",
+      "widths": [
+        960
+      ],
+      "zoom": 3840,
+      "shows": "A session dropped at 15:00-17:00; the editor shows the new time before Apply",
+      "encode": "thumb"
+    },
+    {
+      "id": "split",
+      "root": "footage",
+      "crop": "1080:1720:2620:0",
+      "widths": [
+        1080,
+        840,
+        420
+      ],
+      "zoom": 1080,
+      "shows": "Split 4 h into 2 x 2 h, previewed before Apply split",
+      "src": 420,
+      "sizes": "(min-width: 960px) 420px, (min-width: 880px) calc(48vw - 44px), 43vw"
+    },
+    {
+      "id": "split-m",
+      "mobileOf": "split",
+      "root": "footage",
+      "src": "R06b-split-session/stills/R06b-split-session_05_21.22s_preview-Session-1-08-00-10-00-and-Session-2-10-00-12-00-same.png",
+      "crop": "940:1020:2696:300",
+      "widths": [
+        940,
+        640
+      ],
+      "shows": "Phone crop: the original 4-hour session and the two 2-hour sessions after the split",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "merge",
+      "root": "footage",
+      "crop": "1120:2080:1360:40",
+      "widths": [
+        1120,
+        840,
+        420
+      ],
+      "zoom": 1120,
+      "shows": "The Merge dialog: 14 + 12 = 26 students, same Tutor, a room that fits",
+      "src": 420,
+      "sizes": "(min-width: 960px) 420px, (min-width: 880px) calc(48vw - 44px), 43vw"
+    },
+    {
+      "id": "merge-m",
+      "mobileOf": "merge",
+      "root": "footage",
+      "src": "R06c-merge-streams/stills/R06c-merge-streams_10_37.02s_preview-Thursday-15-00-17-00-14-12-26-students-same-Tutor-HB.png",
+      "crop": "1080:850:1380:1240",
+      "widths": [
+        1080,
+        720
+      ],
+      "shows": "Phone crop: the merge preview, 14 + 12 = 26 students, the same Tutor, 30 seats",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "history",
+      "root": "footage",
+      "crop": "1120:2080:1360:40",
+      "widths": [
+        1120,
+        860,
+        430
+      ],
+      "zoom": 1120,
+      "shows": "History: Version 3 and the three changes it made",
+      "src": 430,
+      "sizes": "(min-width: 960px) 430px, 400px"
+    },
+    {
+      "id": "history-m",
+      "mobileOf": "history",
+      "root": "footage",
+      "src": "03-history/stills/03-history_03_9.52s_Version-3-the-three-changes-of-the-coordinated-fix.png",
+      "crop": "1056:1110:1392:270",
+      "widths": [
+        1056,
+        720
+      ],
+      "shows": "Phone crop: Version 3, its note and the three changes from Version 2",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "export-dialog",
+      "root": "footage",
+      "crop": "1160:860:1340:650",
+      "widths": [
+        1160,
+        680,
+        340
+      ],
+      "zoom": 1160,
+      "shows": "Export: the exact saved Version as a Change Review workbook, 100 rows, 4 changed",
+      "src": 340,
+      "sizes": "(min-width: 1600px) 334px, (min-width: 1328px) calc((1240px - 6vw) * 0.2913), (min-width: 1100px) calc((94vw - 88px) * 0.2913), (min-width: 880px) calc((100vw - 88px) * 0.46), (min-width: 640px) 41.4vw, (min-width: 400px) 73.8vw, calc(82vw - 33px)"
+    },
+    {
+      "id": "print-dialog",
+      "root": "footage",
+      "src": "R07b-print-pdf/stills/R07b-print-pdf_03_8.05s_PDF-made-By-day-all-teaching-weeks-A4-landscape-5-pages.png",
+      "crop": "2480:2090:680:36",
+      "widths": [
+        960
+      ],
+      "zoom": 2480,
+      "shows": "Print: an A4 landscape PDF by day, made in the browser, 5 pages",
+      "encode": "thumb"
+    },
+    {
+      "id": "pdf-day",
+      "root": "footage",
+      "widths": [
+        1950,
+        1300,
+        975,
+        650
+      ],
+      "zoom": 2800,
+      "shows": "Page 1 of a PDF by day, as the app makes it",
+      "src": 650,
+      "sizes": "(min-width: 1600px) 637px, (min-width: 1328px) calc((1240px - 6vw) * 0.5573), (min-width: 1100px) calc((94vw - 88px) * 0.5573), (min-width: 880px) calc((100vw - 88px) * 0.88), 79.2vw"
+    },
+    {
+      "id": "pdf-day-m",
+      "mobileOf": "pdf-day",
+      "root": "footage",
+      "src": "_assets/pdf/CFIT_PDF_by-day_Version3_page1_400dpi.png",
+      "crop": "1730:1480:140:140",
+      "widths": [
+        1200,
+        720
+      ],
+      "shows": "Phone crop: the page title and the first three Stages, 08:00-12:00",
+      "sizes": "(min-width: 400px) 90vw, calc(100vw - 40px)"
+    },
+    {
+      "id": "film-poster",
+      "root": "trailer",
+      "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov",
+      "frame": 5970,
+      "widths": [
+        1920
+      ],
+      "shows": "The film's end card over the fixed timetable",
+      "encode": "photo"
+    },
+    {
+      "id": "og-card",
+      "root": "trailer",
+      "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov",
+      "frame": 5970,
+      "crop": "3840:2010:0:40",
+      "widths": [
+        1200
+      ],
+      "height": 630,
+      "format": "jpg",
+      "shows": "Link preview card"
+    }
   ],
   "videos": [
-    { "id": "cfit-product-film-1080p60", "root": "trailer", "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov", "audio": "CFIT_Trailer_FINAL_4K60_EVENT_H264.mp4", "shows": "The approved product film (Cinematic v4.1), 100.8 s" },
-    { "id": "drag-loop", "root": "footage", "src": "R06a-drag-and-drop/R06a-drag-and-drop_4K60_H264.mp4", "start": 19.4, "end": 26, "crop": "3060:1940:640:0", "width": 1600, "shows": "A session dragged from 10:00 to 15:00; the editor's times follow" },
-    { "id": "drag-loop-mobile", "loopOf": "drag-loop", "root": "footage", "src": "R06a-drag-and-drop/R06a-drag-and-drop_4K60_H264.mp4", "start": 19.4, "end": 26, "crop": "712:1060:998:370", "width": 712, "shows": "Phone crop of the same drag: the S2 and S3 columns from 10:00 to 17:00, the card moving from 10:00 to 15:00" }
+    {
+      "id": "cfit-product-film-1080p60",
+      "root": "trailer",
+      "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov",
+      "audio": "CFIT_Trailer_FINAL_4K60_EVENT_H264.mp4",
+      "shows": "The approved product film (Cinematic v4.1), 100.8 s"
+    },
+    {
+      "id": "cfit-product-film-2160p60-av1",
+      "filmOf": "cfit-product-film-1080p60",
+      "codec": "av1",
+      "root": "trailer",
+      "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov",
+      "audio": "CFIT_Trailer_FINAL_4K60_EVENT_H264.mp4",
+      "shows": "The same film in native 4K60, AV1 10-bit (Chrome, Edge, Firefox; Apple devices with AV1)"
+    },
+    {
+      "id": "cfit-product-film-2160p60-hevc",
+      "filmOf": "cfit-product-film-1080p60",
+      "codec": "hevc",
+      "root": "trailer",
+      "src": "work/CFIT_Trailer_v4_1_2160p60_master.mov",
+      "audio": "CFIT_Trailer_FINAL_4K60_EVENT_H264.mp4",
+      "shows": "The same film in native 4K60, HEVC 10-bit (Safari)"
+    },
+    {
+      "id": "drag-loop",
+      "root": "footage",
+      "src": "R06a-drag-and-drop/R06a-drag-and-drop_4K60_H264.mp4",
+      "start": 19.4,
+      "end": 26,
+      "crop": "3060:1940:640:0",
+      "width": 1600,
+      "shows": "A session dragged from 10:00 to 15:00; the editor's times follow"
+    },
+    {
+      "id": "drag-loop-mobile",
+      "loopOf": "drag-loop",
+      "root": "footage",
+      "src": "R06a-drag-and-drop/R06a-drag-and-drop_4K60_H264.mp4",
+      "start": 19.4,
+      "end": 26,
+      "crop": "712:1060:998:370",
+      "width": 712,
+      "shows": "Phone crop of the same drag: the S2 and S3 columns from 10:00 to 17:00, the card moving from 10:00 to 15:00"
+    }
   ]
 }

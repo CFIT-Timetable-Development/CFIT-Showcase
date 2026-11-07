@@ -48,10 +48,12 @@ assets/css/main.css      all styles (one file, no preprocessor)
 assets/js/main.js        progressive enhancements: menu, film player, loop, image viewer
 assets/img/              WebP pictures (page sizes, phone crops, full-resolution viewer copies), the technology
                          marks (tech-marks.svg), the favicon and the link-preview card
-assets/video/            the product film (H.264 1080p60, 28 MB), the drag-and-drop loop and its phone cut, chapters
+assets/video/            the product film (1080p60 H.264, 4K60 AV1, 4K60 HEVC), the drag-and-drop loop and its
+                         phone cut, the chapters
 assets/vendor/photoswipe the image viewer library (PhotoSwipe 5.4.4, MIT), copied by `npm run vendor`
 assets/fonts/            Inter (variable, Latin subset) and its SIL Open Font License
-tools/                   local server, browser QA, media pipeline, vendor copy (not used by the page itself)
+tools/                   media pipeline, picture markup (sync-srcset), image audit, browser QA, local server,
+                         vendor copy (not used by the page itself)
 docs/ASSETS.md           where every picture and video comes from
 ```
 
@@ -109,20 +111,46 @@ copies from them:
 CFIT_FOOTAGE_DIR=/path/to/CFIT_4K_Cinematic_Footage \
 CFIT_TRAILER_DIR=/path/to/CFIT-Product-Trailer/out/FINAL_4K \
 npm run media                 # or: node tools/build-media.mjs hero-day conflict   (only those)
+node tools/build-media.mjs --images --prune   # every picture, no video; remove pictures no longer listed
+npm run srcset                # write srcset, sizes and the viewer lists into index.html from the manifest
 ```
 
-What is cut from where is listed in `tools/media-manifest.json`. The film is encoded as H.264 High, 1920×1080 at 60 fps,
-CRF 25 (about 2.1 Mbit/s of video), with a keyframe every 2 s so the chapter buttons seek quickly, the index at the front
-(fast start) and the event mix of the sound copied unchanged. The page loads it only when a visitor presses play.
+What is cut from where is listed in `tools/media-manifest.json`; `docs/ASSETS.md` lists every file with its size and
+encoding.
 
-Each picture has page sizes for the `srcset`, a **viewer copy** at the crop's full resolution (`zoom` in the manifest),
-and, where the full screen would be too small to read on a phone, a **phone crop** (`mobileOf`): a tighter cut of the
-same frame, shown through `<picture>` on screens up to 639 px wide. A phone crop should be about 700–1100 pixels of the
-4K frame wide, so the interface shows at 60–100% of its real size on a phone.
+**Pictures.** FFmpeg crops the source at full resolution; sharp resizes it (Lanczos) and encodes WebP:
+- near-lossless for page sizes, lossless at native size: sharp text and borders, full colour detail;
+- lossy q85 for small thumbnails;
+- lossy q90–92 for the two film frames.
+
+Each picture has:
+- **page sizes** matched to the width it is shown at on a desktop at 1×, 1.5× and 2×, plus its native width, so the
+  browser draws the file pixel for pixel instead of enlarging or shrinking it. `sizes` describes the layout exactly;
+  if the layout changes, measure the new widths and update `sizes` in the manifest, then `npm run srcset`;
+- a **viewer copy** at the crop's full resolution (`zoom` in the manifest);
+- a **phone crop** (`mobileOf`) where the full screen would be too small to read on a phone: a tighter cut of the same
+  frame, shown through `<picture>` on screens up to 639 px wide. Make it about 700–1100 pixels of the 4K frame wide.
+
+Never make a picture wider than its source: the build refuses to.
+
+**The film** comes in three files from the same ProRes master, with the same edit, chapters and sound:
+- `cfit-product-film-1080p60.mp4`: H.264, 1920×1080, the default and the fallback everywhere;
+- `cfit-product-film-2160p60-av1.mp4`: AV1 10-bit, native 3840×2160 at 60 fps, CRF 28;
+- `cfit-product-film-2160p60-hevc.mp4`: HEVC 10-bit (`hvc1`), the same, CRF 24, for Safari.
+
+All three have a keyframe every 2 s and the index at the front. The quality control under the player (Auto, 1080p,
+4K UHD) picks the file:
+- Auto chooses 4K only for a large or high-density screen with a mouse or trackpad, a connection not flagged as slow
+  (Data Saver, 2G or 3G), and a browser that reports smooth 4K decoding;
+- if 4K hasn't started 4 s after play, or stalls, Auto continues in 1080p at the same moment;
+- if a 4K file fails to decode (a browser can claim a format it cannot play), the page tries the other 4K format,
+  then 1080p.
+
+Nothing downloads before play. Each file must stay under GitHub's 100 MiB limit.
 
 **Rules for new pictures:** only real screens of the application; only fictional demonstration data — never real
-staff, student, Module or room names, credentials or anything from the live system; crop, never redraw; keep each page
-picture under about 300 KB. Only add figures that the product's own documentation states, with their date.
+staff, student, Module or room names, credentials or anything from the live system; crop, never redraw or enlarge; keep
+each page picture under about 300 KB. Only add figures that the product's own documentation states, with their date.
 
 ## Keeping it true
 

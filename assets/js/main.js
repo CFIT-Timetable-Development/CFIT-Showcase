@@ -157,6 +157,162 @@
     video.addEventListener('seeked', markChapter);
   }
 
+  // ── Film quality: Auto, 1080p or 4K UHD ─────────────────────────────────────────────────────────
+  // The page starts with the 1080p H.264 file (also what runs without JavaScript). 4K is offered as AV1 or HEVC,
+  // whichever this browser can decode; Auto chooses it only for a large or high-density screen with a mouse or
+  // trackpad, a connection not flagged as slow, and a decoder the browser reports as smooth. Nothing downloads
+  // before the visitor presses play (preload="none"); switching keeps the position and whether it was playing.
+  function initQuality() {
+    const video = document.getElementById('film-video');
+    const bar = one('[data-quality]');
+    const status = one('[data-quality-status]');
+    if (!(video instanceof HTMLVideoElement) || !bar) return;
+    const radios = /** @type {HTMLInputElement[]} */ (Array.from(bar.querySelectorAll('input[name="film-quality"]')));
+    const hd = { src: video.dataset.hd ?? '', label: '1080p', codec: 'H.264' };
+    /** @type {{ src: string, type: string, label: string, codec: string }[]} */
+    const uhdOptions = [
+      { src: video.dataset.uhdAv1 ?? '', type: video.dataset.uhdAv1Type ?? '', label: '4K UHD', codec: 'AV1' },
+      { src: video.dataset.uhdHevc ?? '', type: video.dataset.uhdHevcType ?? '', label: '4K UHD', codec: 'HEVC' },
+    ].filter((o) => o.src && o.type);
+    if (!hd.src) return;
+    bar.hidden = false;
+
+    /** @type {{ src: string, label: string, codec: string, smooth?: boolean } | null} */
+    let uhd = null;
+    let choice = 'auto';
+    /** @type {typeof hd} */
+    let playing = hd;
+
+    /** @param {string} text */
+    const say = (text) => { if (status) status.textContent = text; };
+    const absolute = (/** @type {string} */ src) => new URL(src, document.baseURI).href;
+
+    // Auto drops to 1080p for the rest of the visit if 4K stalls; see the guard below.
+    let fellBack = false;
+
+    // A large or high-density screen, a fine pointer and no sign of a slow or metered connection. (The browser's
+    // bandwidth estimate is too coarse to rely on; the stall guard below handles connections that cannot keep up.)
+    const wantsUhd = () => {
+      if (!uhd || uhd.smooth === false || fellBack) return false;
+      if (window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(hover: hover)').matches) return false;
+      /** @type {any} */ const connection = /** @type {any} */ (navigator).connection;
+      if (connection && (connection.saveData || /(^|-)(2g|3g)$/.test(connection.effectiveType ?? ''))) return false;
+      const frame = video.getBoundingClientRect().width * window.devicePixelRatio;
+      const screenLong = Math.max(window.screen.width, window.screen.height) * window.devicePixelRatio;
+      return frame >= 1700 || screenLong >= 2560;
+    };
+
+    /** @param {typeof hd} target */
+    const load = (target) => {
+      if (video.currentSrc && absolute(target.src) === video.currentSrc) { playing = target; return; }
+      const engaged = video.currentSrc !== '' && (video.currentTime > 0 || !video.paused);
+      const at = video.currentTime;
+      const resume = !video.paused;
+      for (const source of video.querySelectorAll('source')) source.remove();
+      playing = target;
+      // Once the visitor has started the film, the new file must load straight away (preload="none" would wait for
+      // a play() that only comes after loading); before that, nothing loads until they press play.
+      if (engaged) video.preload = 'auto';
+      video.src = target.src;
+      if (engaged) {
+        video.addEventListener('loadedmetadata', () => {
+          video.currentTime = at;
+          if (resume) quiet(video.play());
+        }, { once: true });
+      }
+    };
+
+    const apply = () => {
+      const target = choice === 'uhd' ? (uhd ?? hd) : choice === 'hd' ? hd : (wantsUhd() && uhd ? uhd : hd);
+      load(target);
+      const what = `${target.label} (${target.codec})`;
+      if (choice === 'auto') say(`Auto: ${what}${target === hd && uhd ? ' for this screen' : ''}`);
+      else if (choice === 'uhd' && !uhd) say('4K needs AV1 or HEVC, which this browser cannot play: 1080p');
+      else say(`${what}${choice === 'uhd' && uhd?.smooth === false ? ', which may not play smoothly on this device' : ''}`);
+    };
+
+    // Stall guard, for Auto only: if 4K has not started 4 s after play, or stops to buffer for more than 1.2 s (or twice)
+    // while playing, the connection cannot keep up: continue in 1080p at the same moment. A pause to buffer right after
+    // a seek (a chapter) is expected and does not count.
+    let started = false;
+    let stalls = 0;
+    let lastSeek = 0;
+    const fallBack = () => {
+      if (choice !== 'auto' || playing === hd) return;
+      fellBack = true;
+      load(hd);
+      say('Auto: 1080p (H.264), switched from 4K to keep the film playing smoothly');
+    };
+    video.addEventListener('seeking', () => { lastSeek = performance.now(); });
+    video.addEventListener('playing', () => { started = true; });
+    video.addEventListener('play', () => {
+      if (started || choice !== 'auto' || playing === hd) return;
+      window.setTimeout(() => { if (!started && !video.paused) fallBack(); }, 4000);
+    });
+    video.addEventListener('waiting', () => {
+      if (!started || choice !== 'auto' || playing === hd || performance.now() - lastSeek < 2500) return;
+      stalls += 1;
+      if (stalls >= 2) { fallBack(); return; }
+      const stalledAt = performance.now();
+      window.setTimeout(() => {
+        if (video.readyState < HTMLMediaElement.HAVE_FUTURE_DATA && !video.paused && performance.now() - stalledAt >= 1200) fallBack();
+      }, 1250);
+    });
+    // A new file starts its own "has it started" clock.
+    video.addEventListener('emptied', () => { started = false; });
+
+    // If a 4K file fails to decode here (a browser can claim a format it cannot play), try the other 4K format, then
+    // 1080p, at the same moment.
+    /** @type {{ src: string, label: string, codec: string, smooth?: boolean }[]} */
+    let candidates = [];
+    video.addEventListener('error', () => {
+      if (playing === hd || !video.error) return;
+      const engaged = video.currentTime > 0 || started;
+      candidates = candidates.filter((c) => c.src !== playing.src);
+      uhd = candidates[0] ?? null;
+      if (uhd) { apply(); return; }
+      const uhdRadio = radios.find((r) => r.value === 'uhd');
+      if (uhdRadio) uhdRadio.disabled = true;
+      load(hd);
+      say(engaged ? '4K could not play in this browser, so the film continues in 1080p' : '4K cannot play in this browser: 1080p (H.264)');
+    });
+
+    for (const radio of radios) {
+      radio.addEventListener('change', () => { if (radio.checked) { choice = radio.value; apply(); } });
+    }
+
+    // Which 4K files can this browser decode, and smoothly? In order of preference.
+    const detect = async () => {
+      /** @type {{ src: string, label: string, codec: string, smooth: boolean }[]} */
+      const found = [];
+      for (const option of uhdOptions) {
+        if (!video.canPlayType(option.type)) continue;
+        let supported = true;
+        let smooth = true;
+        const capabilities = /** @type {any} */ (navigator).mediaCapabilities;
+        if (capabilities?.decodingInfo) {
+          try {
+            const info = await capabilities.decodingInfo({ type: 'file', video: { contentType: option.type, width: 3840, height: 2160, bitrate: 8000000, framerate: 60 } });
+            supported = Boolean(info.supported);
+            smooth = Boolean(info.smooth);
+          } catch { /* unknown: rely on canPlayType */ }
+        }
+        if (supported) found.push({ ...option, smooth });
+      }
+      return found;
+    };
+    detect().then((found) => {
+      candidates = found;
+      uhd = found[0] ?? null;
+      const uhdRadio = radios.find((r) => r.value === 'uhd');
+      if (uhdRadio && !uhd) {
+        uhdRadio.disabled = true;
+        uhdRadio.closest('label')?.setAttribute('title', '4K needs AV1 or HEVC, which this browser cannot play');
+      }
+      apply();
+    }, () => apply());
+  }
+
   // "Watch Product Film": bring the player into view and start it. Started by the visitor, so sound is on.
   function initWatchLinks() {
     for (const link of all('[data-watch-film]')) {
@@ -435,6 +591,7 @@
     initHeader();
     initReveal();
     initPlayer();
+    initQuality();
     initWatchLinks();
     initLoops();
     initViewer();
