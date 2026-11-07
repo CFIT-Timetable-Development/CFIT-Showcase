@@ -48,14 +48,18 @@ for (const item of manifest.images) {
     ? ['-i', src]
     : ['-ss', String(Math.max(0, (item.frame - 60) / 60)), '-i', src];
   const pick = item.frame === undefined ? [] : [`select=eq(n\\,${Math.min(60, item.frame)})`];
-  for (const w of item.widths) {
+  // The in-page widths, then the viewer's copy at the crop's native resolution (not listed in the page's srcset,
+  // so it is downloaded only when someone opens the picture).
+  const widths = [...item.widths, ...(item.zoom && !item.widths.includes(item.zoom) ? [item.zoom] : [])];
+  for (const w of widths) {
     const fmt = item.format ?? 'webp';
     const out = path.join(imgDir, `${item.id}-${w}.${fmt}`);
     const scale = item.height ? `scale=${w}:${item.height}:flags=lanczos` : `scale=${w}:-2:flags=lanczos`;
     const vf = [...pick, ...(item.crop ? [`crop=${item.crop}`] : []), scale, 'format=rgb24'].join(',');
+    const quality = w === item.zoom && !item.widths.includes(w) ? '86' : '88';
     const codec = fmt === 'jpg'
       ? ['-c:v', 'mjpeg', '-q:v', '3']
-      : ['-c:v', 'libwebp', '-quality', '88', '-compression_level', '6', '-preset', 'picture'];
+      : ['-c:v', 'libwebp', '-quality', quality, '-compression_level', '6', '-preset', 'picture'];
     ffmpeg([...input, '-vf', vf, '-frames:v', '1', ...codec, out]);
     console.log(`${path.relative(repo, out)}  ${kb(out)}`);
   }
@@ -77,8 +81,9 @@ for (const v of manifest.videos) {
       '-c:a', 'copy', '-movflags', '+faststart', '-metadata', 'title=CFIT Timetable — Product Film', out,
     ]);
     console.log(`${path.relative(repo, out)}  ${kb(out)}`);
-  } else if (v.id === 'drag-loop') {
+  } else if (v.id === 'drag-loop' || v.loopOf === 'drag-loop') {
     // A silent loop of a real drag: the clip, a 1 s hold on its last frame, then a 0.5 s cross-fade back to the start.
+    // drag-loop-mobile is the same clip cut tighter for phones.
     const out = path.join(videoDir, `${v.id}.mp4`);
     const len = v.end - v.start;
     const base = `crop=${v.crop},scale=${v.width}:-2:flags=lanczos,fps=30,setsar=1`;

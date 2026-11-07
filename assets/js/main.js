@@ -1,10 +1,16 @@
 // @ts-check
-// CFIT Timetable — product showcase. Plain JavaScript, no dependencies, type-checked with `npm run typecheck`.
-// Every feature here is an enhancement: without JavaScript the page still shows every picture, chapter and step.
+// CFIT Timetable — product showcase. Plain JavaScript, type-checked with `npm run typecheck`.
+// Every feature here is an enhancement: without JavaScript the page still shows every picture, chapter and step,
+// and each picture is a link to its full-resolution file.
+// The one library, PhotoSwipe (MIT, assets/vendor/photoswipe), is loaded only when a picture is first opened.
 (() => {
   'use strict';
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const phone = window.matchMedia('(max-width: 639px)');
+  const touch = window.matchMedia('(hover: none), (pointer: coarse)');
+  // Relative URLs for the lazily loaded viewer resolve against this script, so the base path never matters.
+  const scriptUrl = document.currentScript instanceof HTMLScriptElement ? document.currentScript.src : document.baseURI;
 
   /**
    * @param {string} selector
@@ -55,7 +61,7 @@
         toggle?.focus();
       }
     });
-    window.matchMedia('(min-width: 900px)').addEventListener('change', () => setOpen(false));
+    window.matchMedia('(min-width: 1000px)').addEventListener('change', () => setOpen(false));
 
     if (!('IntersectionObserver' in window)) return;
     /** @type {Map<string, HTMLElement>} */
@@ -167,134 +173,20 @@
     }
   }
 
-  // ── Workflow: on wide screens the six pictures share one sticky stage ──────────────────────────
-  function initFlow() {
-    const flow = one('[data-flow]');
-    if (!flow) return;
-    const steps = all('[data-step]', flow);
-    const figures = steps.map((step) => one('.flow-figure', step));
-    const rail = one('[data-flow-rail]', flow);
-    const railItems = rail ? all('li', rail) : [];
-    const wide = window.matchMedia('(min-width: 1100px)');
-
-    /** @type {HTMLElement | null} */ let stage = null;
-    let active = 0;
-    let queued = false;
-
-    /** @param {number} index */
-    const setActive = (index) => {
-      active = index;
-      steps.forEach((step, i) => step.classList.toggle('is-active', i === index));
-      figures.forEach((figure, i) => {
-        if (!figure) return;
-        figure.classList.toggle('is-active', i === index);
-        figure.inert = stage !== null && i !== index;
-      });
-      railItems.forEach((item, i) => item.classList.toggle('is-active', i === index));
-    };
-
-    // The active step is the one whose middle is nearest the middle of the window.
-    const pick = () => {
-      queued = false;
-      const middle = window.innerHeight / 2;
-      let best = 0;
-      let bestDistance = Infinity;
-      steps.forEach((step, i) => {
-        const r = step.getBoundingClientRect();
-        const distance = Math.abs(r.top + r.height / 2 - middle);
-        if (distance < bestDistance) { bestDistance = distance; best = i; }
-      });
-      setActive(best);
-    };
-    const onScroll = () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(pick);
-    };
-
-    const enhance = () => {
-      if (stage) return;
-      stage = document.createElement('div');
-      stage.className = 'flow-stage';
-      if (rail) stage.append(rail);
-      const media = document.createElement('div');
-      media.className = 'flow-media';
-      for (const figure of figures) if (figure) media.append(figure);
-      stage.append(media);
-      flow.append(stage);
-      flow.classList.add('is-enhanced');
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      pick();
-    };
-
-    const restore = () => {
-      if (!stage) return;
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      steps.forEach((step, i) => {
-        const figure = figures[i];
-        if (figure) {
-          figure.inert = false;
-          step.append(figure);
-        }
-      });
-      if (rail) flow.prepend(rail);
-      stage.remove();
-      stage = null;
-      flow.classList.remove('is-enhanced');
-      setActive(active);
-    };
-
-    const apply = () => (wide.matches ? enhance() : restore());
-    apply();
-    wide.addEventListener('change', apply);
-  }
-
-  // ── Tabs (ARIA tabs pattern: arrow keys, Home, End) ─────────────────────────────────────────────
-  function initTabs() {
-    for (const root of all('[data-tabs]')) {
-      const list = one('[role="tablist"]', root);
-      const tabs = all('[role="tab"]', root);
-      const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls') ?? ''));
-      if (!list || tabs.length === 0) continue;
-      list.hidden = false;
-
-      /** @param {number} index @param {boolean} focus */
-      const select = (index, focus) => {
-        tabs.forEach((tab, i) => {
-          const on = i === index;
-          tab.setAttribute('aria-selected', String(on));
-          tab.tabIndex = on ? 0 : -1;
-          const panel = panels[i];
-          if (panel) panel.hidden = !on;
-        });
-        if (focus) tabs[index].focus();
-      };
-
-      tabs.forEach((tab, i) => {
-        tab.addEventListener('click', () => select(i, false));
-        tab.addEventListener('keydown', (event) => {
-          const last = tabs.length - 1;
-          /** @type {Record<string, number>} */
-          const keys = { ArrowRight: i === last ? 0 : i + 1, ArrowLeft: i === 0 ? last : i - 1, Home: 0, End: last };
-          if (event.key in keys) {
-            event.preventDefault();
-            select(keys[event.key], true);
-          }
-        });
-      });
-      select(0, false);
-    }
-  }
-
   // ── The drag-and-drop loop: plays silently while in view, with a pause button ───────────────────
+  // On phones it plays a tighter crop of the same recording (the <source media> picks it); its poster is set here.
   function initLoops() {
     for (const root of all('[data-loop]')) {
       const video = root.querySelector('[data-loop-video]');
       const button = one('[data-loop-toggle]', root);
       const label = one('[data-loop-label]', root);
       if (!(video instanceof HTMLVideoElement) || !button) continue;
+      const phonePoster = video.dataset.posterPhone;
+      if (phone.matches && phonePoster) {
+        video.poster = phonePoster;
+        video.width = 712;
+        video.height = 1060;
+      }
       button.hidden = false;
       // With reduced motion the loop never starts by itself.
       let heldByVisitor = reduceMotion.matches;
@@ -328,71 +220,204 @@
     }
   }
 
-  // ── Lightbox: every [data-zoom] picture opens large; arrows, swipe and Escape work ───────────────
-  function initLightbox() {
-    const dialog = document.querySelector('[data-lightbox]');
-    if (!(dialog instanceof HTMLDialogElement) || typeof dialog.showModal !== 'function') return;
-    const caption = one('[data-lightbox-caption]', dialog);
-    const img = document.createElement('img');
-    img.alt = '';
-    img.decoding = 'async';
-    img.dataset.lightboxImg = '';
-    (one('.lightbox-inner', dialog) ?? dialog).prepend(img);
+  // ── Image viewer: pinch, double-tap and button zoom, pan, swipe, keyboard (PhotoSwipe) ─────────────
+  /**
+   * @typedef {{ fit: number, initial: number }} ZoomLevels
+   * @typedef {{ x: number, y: number }} Point
+   * @typedef {{ src: string, srcset: string, width: number, height: number, alt: string, caption: string }} Item
+   */
 
-    /** @type {{ full: string, caption: string, alt: string }[]} */
+  // Double-tap or the zoom button go to the application's real size (the recordings are at twice the
+  // screen's pixel density), and at least twice the fitted size; pinch goes up to one image pixel per CSS pixel.
+  /** @param {ZoomLevels} zl */
+  const secondaryZoom = (zl) => Math.max(zl.fit * 2, Math.min(1, Math.max(zl.fit * 2.5, 0.5)));
+  /** @param {ZoomLevels} zl */
+  const maxZoom = (zl) => Math.max(1, zl.fit * 4);
+
+  /** The device's safe-area insets (notch, home indicator), read once from CSS. */
+  const safeArea = () => {
+    const probe = document.createElement('div');
+    probe.style.cssText = 'position:fixed;visibility:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+    document.body.append(probe);
+    const s = getComputedStyle(probe);
+    const inset = { top: parseFloat(s.paddingTop) || 0, right: parseFloat(s.paddingRight) || 0, bottom: parseFloat(s.paddingBottom) || 0, left: parseFloat(s.paddingLeft) || 0 };
+    probe.remove();
+    return inset;
+  };
+
+  /** @param {Point} viewport */
+  const isNarrow = (viewport) => viewport.x < 700 || (touch.matches && viewport.y < 520);
+
+  function initViewer() {
+    const triggers = all('[data-zoom]');
+    if (triggers.length === 0) return;
+
+    /** @type {Item[]} */
     const items = [];
     /** @type {Map<string, number>} */
     const indexOf = new Map();
-    const triggers = all('[data-zoom]');
     for (const trigger of triggers) {
-      const full = trigger.dataset.full ?? '';
-      if (!full || indexOf.has(full)) continue;
-      indexOf.set(full, items.length);
-      items.push({ full, caption: trigger.dataset.caption ?? '', alt: trigger.querySelector('img')?.alt ?? '' });
-    }
-
-    let index = 0;
-    /** @type {HTMLElement | null} */ let opener = null;
-
-    /** @param {number} i */
-    const show = (i) => {
-      index = (i + items.length) % items.length;
-      const item = items[index];
-      dialog.classList.add('is-loading');
-      img.alt = item.alt;
-      img.src = item.full;
-      if (caption) caption.textContent = item.caption;
-    };
-    img.addEventListener('load', () => dialog.classList.remove('is-loading'));
-    img.addEventListener('error', () => dialog.classList.remove('is-loading'));
-
-    for (const trigger of triggers) {
-      trigger.addEventListener('click', () => {
-        opener = trigger;
-        show(indexOf.get(trigger.dataset.full ?? '') ?? 0);
-        dialog.showModal();
+      const src = trigger.getAttribute('href') ?? '';
+      if (!src || indexOf.has(src)) continue;
+      indexOf.set(src, items.length);
+      items.push({
+        src,
+        srcset: trigger.dataset.srcset ?? '',
+        width: Number(trigger.dataset.w),
+        height: Number(trigger.dataset.h),
+        alt: trigger.querySelector('img')?.alt ?? '',
+        caption: trigger.dataset.caption ?? '',
       });
     }
-    one('[data-lightbox-close]', dialog)?.addEventListener('click', () => dialog.close());
-    one('[data-lightbox-prev]', dialog)?.addEventListener('click', () => show(index - 1));
-    one('[data-lightbox-next]', dialog)?.addEventListener('click', () => show(index + 1));
-    dialog.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') show(index - 1);
-      else if (event.key === 'ArrowRight') show(index + 1);
-    });
-    // A click on the dark area around the picture closes it.
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog || (event.target instanceof Element && event.target.classList.contains('lightbox-inner'))) dialog.close();
-    });
-    let startX = 0;
-    dialog.addEventListener('pointerdown', (event) => { startX = event.clientX; });
-    dialog.addEventListener('pointerup', (event) => {
-      const dx = event.clientX - startX;
-      if (event.pointerType !== 'mouse' && Math.abs(dx) > 60) show(dx < 0 ? index + 1 : index - 1);
-    });
-    dialog.addEventListener('close', () => {
-      img.removeAttribute('src');
-      opener?.focus();
+
+    /** @type {Promise<any> | null} */
+    let loading = null;
+    const load = () => {
+      if (loading) return loading;
+      const css = new Promise((resolve) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = new URL('../vendor/photoswipe/photoswipe.css', scriptUrl).href;
+        link.onload = () => resolve(true);
+        link.onerror = () => resolve(false);
+        // Before main.css, so the site's viewer theme wins over the library's defaults.
+        const main = document.querySelector('link[rel="stylesheet"]');
+        document.head.insertBefore(link, main);
+      });
+      const code = import(new URL('../vendor/photoswipe/photoswipe.esm.min.js', scriptUrl).href);
+      loading = Promise.all([code, css]).then(([module]) => module.default);
+      loading.catch(() => { loading = null; });
+      return loading;
+    };
+    // Start fetching the viewer as soon as a picture is approached (load() runs once and is then cached).
+    for (const type of ['pointerover', 'focusin', 'touchstart']) {
+      document.addEventListener(type, (event) => {
+        if (event.target instanceof Element && event.target.closest('[data-zoom]')) quiet(load().then(() => {}));
+      }, { passive: true });
+    }
+
+    let busy = false;
+    /** @param {number} index @param {HTMLElement} trigger */
+    const open = async (index, trigger) => {
+      if (busy) return;
+      busy = true;
+      try {
+        const PhotoSwipe = await load();
+        const inset = safeArea();
+        /** @type {HTMLElement | null} */ let caption = null;
+        /** @type {HTMLElement | null} */ let hint = null;
+
+        const pswp = new PhotoSwipe({
+          dataSource: items,
+          index,
+          mainClass: 'cfit-viewer',
+          bgOpacity: 1,
+          spacing: 0.06,
+          showHideAnimationType: 'fade',
+          initialZoomLevel: 'fit',
+          secondaryZoomLevel: secondaryZoom,
+          maxZoomLevel: maxZoom,
+          imageClickAction: 'zoom',
+          bgClickAction: 'close',
+          doubleTapAction: 'zoom',
+          // A tap outside the picture closes the viewer; a tap on the picture does nothing (double-tap zooms).
+          tapAction: (/** @type {Point} */ _point, /** @type {PointerEvent} */ event) => {
+            const onImage = event.target instanceof Element && event.target.closest('.pswp__img');
+            if (!onImage && !isZoomed()) pswp.close();
+          },
+          // Room at the top for the buttons and at the bottom for the caption, hint and (on phones) the arrows.
+          paddingFn: (/** @type {Point} */ viewport) => (isNarrow(viewport)
+            ? { top: 62 + inset.top, bottom: 136 + inset.bottom, left: inset.left, right: inset.right }
+            : { top: 72, bottom: 124, left: 84 + inset.left, right: 84 + inset.right }),
+          closeTitle: 'Close',
+          zoomTitle: 'Zoom in',
+          arrowPrevTitle: 'Previous picture',
+          arrowNextTitle: 'Next picture',
+          errorMsg: 'This picture could not be loaded.',
+          indexIndicatorSep: ' / ',
+        });
+
+        const isZoomed = () => {
+          const slide = pswp.currSlide;
+          return Boolean(slide && slide.currZoomLevel > slide.zoomLevels.initial * 1.02);
+        };
+
+        // The caption sits just under the picture while it fits, and fades out while zoomed in, so it never covers it.
+        const update = () => {
+          const root = pswp.element;
+          const slide = pswp.currSlide;
+          if (!root || !slide) return;
+          const zoomed = isZoomed();
+          root.classList.toggle('is-zoomed', zoomed);
+          const zoomButton = root.querySelector('.pswp__button--zoom');
+          if (zoomButton) {
+            const text = zoomed ? 'Fit to screen' : 'Zoom in';
+            zoomButton.setAttribute('aria-label', text);
+            zoomButton.setAttribute('title', text);
+          }
+          if (hint) {
+            hint.textContent = touch.matches
+              ? (zoomed ? 'Drag to look · double-tap to fit' : 'Pinch or double-tap to zoom')
+              : (zoomed ? 'Drag to look around · click to fit' : 'Click to zoom · ← → next picture');
+          }
+          if (caption && caption.textContent !== (slide.data.caption ?? '')) caption.textContent = slide.data.caption ?? '';
+          if (caption && !zoomed) {
+            const box = slide.content?.element?.getBoundingClientRect();
+            const narrow = isNarrow({ x: window.innerWidth, y: window.innerHeight });
+            const limit = window.innerHeight - inset.bottom - (narrow ? 70 : 66) - caption.offsetHeight;
+            const top = box && box.height > 0 ? Math.min(box.bottom + 14, limit) : limit;
+            caption.style.top = `${Math.max(0, Math.round(top))}px`;
+          }
+        };
+
+        pswp.on('uiRegister', () => {
+          pswp.ui.registerElement({
+            name: 'cfit-caption', className: 'cfit-caption', appendTo: 'root', tagName: 'p',
+            onInit: (/** @type {HTMLElement} */ el) => { caption = el; el.id = 'cfit-viewer-caption'; },
+          });
+          pswp.ui.registerElement({
+            name: 'cfit-hint', className: 'cfit-hint', appendTo: 'root', tagName: 'p',
+            onInit: (/** @type {HTMLElement} */ el) => { hint = el; el.setAttribute('aria-hidden', 'true'); },
+          });
+        });
+        pswp.on('afterInit', () => {
+          const root = pswp.element;
+          if (!root) return;
+          // Browsers drop a tap that interrupts the momentum of a swipe, so a quick tap on Close right after a swipe
+          // would produce no click. Close on the touch release itself.
+          const closeButton = /** @type {Element | null} */ (root.querySelector('.pswp__button--close'));
+          let pressed = false;
+          closeButton?.addEventListener('pointerdown', (event) => { pressed = event instanceof PointerEvent && event.pointerType !== 'mouse'; });
+          closeButton?.addEventListener('pointerup', (event) => {
+            if (pressed && event instanceof PointerEvent && event.pointerType !== 'mouse') pswp.close();
+            pressed = false;
+          });
+          root.setAttribute('aria-label', 'Picture viewer');
+          root.setAttribute('aria-modal', 'true');
+          root.setAttribute('aria-describedby', 'cfit-viewer-caption');
+          update();
+        });
+        for (const name of ['change', 'zoomPanUpdate', 'resize', 'imageSizeChange', 'loadComplete', 'openingAnimationEnd']) pswp.on(name, update);
+        pswp.on('destroy', () => {
+          if (document.activeElement === document.body || document.activeElement === null) trigger.focus({ preventScroll: true });
+        });
+        pswp.init();
+      } catch {
+        // Without the viewer (offline, blocked script), open the picture itself.
+        window.location.href = trigger.getAttribute('href') ?? '';
+      } finally {
+        busy = false;
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const trigger = event.target instanceof Element ? event.target.closest('[data-zoom]') : null;
+      if (!(trigger instanceof HTMLElement)) return;
+      const index = indexOf.get(trigger.getAttribute('href') ?? '');
+      if (index === undefined) return;
+      event.preventDefault();
+      quiet(open(index, trigger));
     });
   }
 
@@ -401,10 +426,8 @@
     initReveal();
     initPlayer();
     initWatchLinks();
-    initFlow();
-    initTabs();
     initLoops();
-    initLightbox();
+    initViewer();
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
